@@ -22,15 +22,10 @@
   background: #f8f9fa;
 }
 
-.info__header strong {
-  font-size: 18px;
-  color: #333;
-}
-
 .info__close {
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 24px;
   cursor: pointer;
   color: #666;
   padding: 0;
@@ -64,7 +59,7 @@
 .info__list > div {
   display: flex;
   padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1.5px solid #f0f0f0;
 }
 
 .info__list dt {

@@ -44,10 +44,9 @@ type CafePost = {
     return (
       <aside className="info">
         <div className="info__header">
-          <strong>{cafe.store_name ?? "店舗"}</strong>
           {onClose && (
             <button className="info__close" onClick={onClose} aria-label="閉じる">
-              ×
+              ＜
             </button>
           )}
         </div>
@@ -67,6 +66,12 @@ type CafePost = {
           )}
   
           <dl className="info__list">
+            <dl className="info__list">
+                <div>
+                <dt>店舗名</dt>
+                <dd>{cafe.store_name ?? "—"}</dd>
+                </div>
+            </dl>
             <div>
               <dt>住所</dt>
               <dd>{cafe.address ?? "—"}</dd>
