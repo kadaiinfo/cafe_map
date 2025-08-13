@@ -23,7 +23,7 @@ export function createCafeMarkerElement(mediaUrl: string | null | undefined, sto
     img.style.display = "block"
   
     img.onerror = () => {
-      el.style.background = "#ff6b6b"
+      el.style.background = "#ffffff"
       el.textContent = "📷"
       el.style.color = "#fff"
       el.style.display = "flex"

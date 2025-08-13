@@ -9,20 +9,26 @@ import { createCafeMarkerElement } from "./createCafeMarker"
 // この記事を参考に実装した 
 // https://zenn.dev/asahina820/books/c29592e397a35b/viewer/0200eb
 export default function MapView() {
-    const mapContainerRef = useRef<HTMLDivElement | null>(null)
+    // [MapView 実行] → JSX を返す (<div>)
+    //           ↓
+    // [React が DOM 作成] → ref に DOM をセット
+    //           ↓
+    // [useEffect 実行] → MapLibre に DOM を渡して地図描画
+
+    const mapContainerRef = useRef(null)
     const cafes = getCafeData() // 店舗情報を取得する
 
     useEffect(() => {
         if (!mapContainerRef.current) return
 
         const map = new maplibregl.Map({
-        container: mapContainerRef.current, // マップを表示するHTML要素のidを指定
+        container: mapContainerRef.current, // マップを表示するHTML要素を指定する
         style: "https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json", // 地図のスタイルを指定
         center: [130.546634, 31.570480], // 地図の中心座標
-        zoom: 14, // ズームレベル
+        zoom: 14, // 地図のズームレベル
         })
 
-        // 副作用なので map ではなく forEach を使う
+        // 副作用なので map ではなく forEach を使う(ここ調べる)
         cafes.forEach(cafe => {
             const markerEl = createCafeMarkerElement(cafe.media_url, cafe.store_name)
             new maplibregl.Marker({ element: markerEl })
@@ -31,11 +37,12 @@ export default function MapView() {
           })
   
 
-        // 画面から外れる時removeする
+        // クリーンアップ関数：useEffectが終了するときmapをremoveする
         return () => {
         map.remove()
         }
     },[])
 
+    // ref={mapContainerRef}で、以下のdiv要素をmapContainerRef.currentに入れる
     return <div ref={mapContainerRef} className="map-container" />
 }
