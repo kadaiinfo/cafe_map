@@ -1,9 +1,10 @@
-import { useEffect, useRef } from "react"
+import { useState,useEffect, useRef } from "react"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import "./MapView.css"
 import { getCafeData } from "../../lib/dataClient"
 import { CafeMarkerElement } from "./CafeMarker"
+import Information from "../Information/Information.tsx"
 
 // 地図を描画するコンポーネント
 // この記事を参考に実装した 
@@ -17,6 +18,7 @@ export default function MapView() {
 
     const mapContainerRef = useRef(null)
     const cafes = getCafeData() // 店舗情報を取得する
+    const [selected, setSelected] = useState(null)
 
     useEffect(() => {
         if (!mapContainerRef.current) return
@@ -31,9 +33,14 @@ export default function MapView() {
         // 副作用なので map ではなく forEach を使う(ここ調べる)
         cafes.forEach(cafe => {
             const markerEl = CafeMarkerElement(cafe.media_url, cafe.store_name)
-            new maplibregl.Marker({ element: markerEl })
+            const marker = new maplibregl.Marker({ element: markerEl })
               .setLngLat([cafe.lng, cafe.lat])
               .addTo(map)
+            
+            // マーカークリック時の処理
+            markerEl.addEventListener('click', () => {
+                setSelected(cafe)
+            })
           })
   
 
@@ -44,5 +51,10 @@ export default function MapView() {
     },[])
 
     // ref={mapContainerRef}で、以下のdiv要素をmapContainerRef.currentに入れる
-    return <div ref={mapContainerRef} className="map-container" />
+    return (
+        <div className="map-layout">
+            <div ref={mapContainerRef} className="map-container" />
+            {selected && <Information cafe={selected} onClose={() => setSelected(null)} />}
+        </div>
+    )
 }
