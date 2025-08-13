@@ -83,15 +83,17 @@
 
 .info__link {
   display: inline-block;
-  background: #405DE6;
-  color: white;
+  background: white;
+  color: black;
   padding: 10px 16px;
   text-decoration: none;
+  border: 1.5px solid black; 
   border-radius: 6px;
   font-weight: 500;
   margin-top: 16px;
 }
 
 .info__link:hover {
-  background: #3448C5;
+  background: black;
+  color: white;
 }

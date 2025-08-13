@@ -17,8 +17,9 @@ export default function MapView() {
     // [useEffect 実行] → MapLibre に DOM を渡して地図描画
 
     const mapContainerRef = useRef(null)
+    const mapRef = useRef<maplibregl.Map | null>(null)
     const cafes = getCafeData() // 店舗情報を取得する
-    const [selected, setSelected] = useState(null)
+    const [selected, setSelected] = useState<typeof cafes[0] | null>(null)
 
     useEffect(() => {
         if (!mapContainerRef.current) return
@@ -29,17 +30,25 @@ export default function MapView() {
         center: [130.546634, 31.570480], // 地図の中心座標
         zoom: 14, // 地図のズームレベル
         })
+        
+        mapRef.current = map
 
         // 副作用なので map ではなく forEach を使う(ここ調べる)
         cafes.forEach(cafe => {
             const markerEl = CafeMarkerElement(cafe.media_url, cafe.store_name)
-            const marker = new maplibregl.Marker({ element: markerEl })
+            new maplibregl.Marker({ element: markerEl })
               .setLngLat([cafe.lng, cafe.lat])
               .addTo(map)
             
             // マーカークリック時の処理
             markerEl.addEventListener('click', () => {
                 setSelected(cafe)
+                // マーカーの位置に地図の中心を移動
+                if (mapRef.current) {
+                    mapRef.current.flyTo({
+                        center: [cafe.lng, cafe.lat]
+                    })
+                }
             })
           })
   
