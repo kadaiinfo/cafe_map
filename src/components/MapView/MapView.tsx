@@ -3,7 +3,7 @@ import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import "./MapView.css"
 import { getCafeData } from "../../lib/dataClient"
-import { createCafeMarkerElement } from "./createCafeMarker"
+import { CafeMarkerElement } from "./CafeMarker"
 
 // 地図を描画するコンポーネント
 // この記事を参考に実装した 
@@ -30,7 +30,7 @@ export default function MapView() {
 
         // 副作用なので map ではなく forEach を使う(ここ調べる)
         cafes.forEach(cafe => {
-            const markerEl = createCafeMarkerElement(cafe.media_url, cafe.store_name)
+            const markerEl = CafeMarkerElement(cafe.media_url, cafe.store_name)
             new maplibregl.Marker({ element: markerEl })
               .setLngLat([cafe.lng, cafe.lat])
               .addTo(map)
