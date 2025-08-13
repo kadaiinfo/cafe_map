@@ -5,7 +5,6 @@ function App() {
 
   return (
     <div>
-      <h1>Cafe Map</h1>
       <MapView />
     </div>
   )
