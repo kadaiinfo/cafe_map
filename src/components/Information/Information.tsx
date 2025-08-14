@@ -52,20 +52,31 @@ return (
         )}
 
         <dl className="info__list">
-        <dl className="info__list">
             <div>
             <dt>店舗名</dt>
             <dd>{cafe.store_name ?? "—"}</dd>
             </div>
-        </dl>
-        <div>
+            <div>
             <dt>住所</dt>
             <dd>{cafe.address ?? "—"}</dd>
-        </div>
+            </div>
         </dl>
 
         {cafe.caption && (
-        <p className="info__caption">{cafe.caption}</p>
+        <p className="info__caption">
+          {cafe.caption.split('\n').map((line, index, arr) => (
+            <span key={index}>
+              {line}
+              {index < arr.length - 1 && <br />}
+            </span>
+          ))}
+        </p>
+        )}
+
+        {cafe.timestamp && (
+        <p className="info__date">
+          取材日：{new Date(cafe.timestamp).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/')}
+        </p>
         )}
 
         {cafe.permalink && (
@@ -83,7 +94,7 @@ return (
             target="_blank"
             rel="noopener noreferrer"
         >
-            情報の修正依頼はこちら
+            情報修正の依頼はこちら
         </a>
     </div>
     </aside>
