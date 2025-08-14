@@ -36,17 +36,32 @@ export default function MapView() {
         // 副作用なので map ではなく forEach を使う(ここ調べる)
         cafes.forEach(cafe => {
             const markerEl = CafeMarkerElement(cafe.media_url, cafe.store_name)
-            new maplibregl.Marker({ element: markerEl })
+            const marker = new maplibregl.Marker({ element: markerEl })
               .setLngLat([cafe.lng, cafe.lat])
               .addTo(map)
+            
             
             // マーカークリック時の処理
             markerEl.addEventListener('click', () => {
                 setSelected(cafe)
-                // マーカーの位置に地図の中心を移動
+                // マーカーを画面左半分の中央に移動
                 if (mapRef.current) {
-                    mapRef.current.flyTo({
-                        center: [cafe.lng, cafe.lat]
+                    const map = mapRef.current
+                    const mapContainer = map.getContainer()
+                    const mapWidth = mapContainer.offsetWidth
+                    
+                    // 画面左半分の中央にマーカーを表示するためのオフセットを計算
+                    const targetX = mapWidth * 0.25 // 左半分の中央
+                    const centerX = mapWidth * 0.5   // 画面中央
+                    const offsetX = centerX - targetX
+                    
+                    // 経度のオフセットを計算（ピクセル差を経度差に変換）
+                    const bounds = map.getBounds()
+                    const lngRange = bounds.getEast() - bounds.getWest()
+                    const lngOffset = (offsetX / mapWidth) * lngRange
+                    
+                    map.flyTo({
+                        center: [cafe.lng + lngOffset, cafe.lat]
                     })
                 }
             })
