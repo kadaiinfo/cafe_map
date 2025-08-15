@@ -1,5 +1,5 @@
 // src/features/map/components/information.tsx
-import { useState, useRef, useCallback, useEffect} from "react"
+import { useState, useCallback, useEffect} from "react"
 import "./Information.css"
 type CafePost = {
     id: string
