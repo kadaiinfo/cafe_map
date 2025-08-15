@@ -1,4 +1,4 @@
-import { useState,useEffect, useRef } from "react"
+import { useState,useEffect, useRef, useCallback } from "react"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import "./MapView.css"
@@ -21,8 +21,82 @@ export default function MapView() {
     const mapRef = useRef<maplibregl.Map | null>(null)
     const allCafes = getCafeData() // 全店舗情報を取得する
     const [selected, setSelected] = useState<typeof allCafes[0] | null>(null)
-    const markersRef = useRef<maplibregl.Marker[]>([]) // マーカーの参照を保持
+    const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map()) // マーカーの参照をMapで管理
     const [mapLoaded, setMapLoaded] = useState(false) // マップの読み込み状態
+
+    // 表示範囲内のカフェをフィルタリングする関数
+    const getVisibleCafes = useCallback(() => {
+        if (!mapRef.current) return []
+        
+        const bounds = mapRef.current.getBounds()
+        return allCafes.filter(cafe => 
+            cafe.lng >= bounds.getWest() &&
+            cafe.lng <= bounds.getEast() &&
+            cafe.lat >= bounds.getSouth() &&
+            cafe.lat <= bounds.getNorth()
+        )
+    }, [allCafes])
+
+    // マーカーを更新する関数
+    const updateMarkers = useCallback(() => {
+        if (!mapRef.current || !mapLoaded) return
+
+        const visibleCafes = getVisibleCafes()
+        const currentMarkers = markersRef.current
+
+        // 現在表示されているマーカーのIDセット
+        const visibleCafeIds = new Set(visibleCafes.map(cafe => cafe.id))
+        
+        // 表示範囲外のマーカーを削除
+        currentMarkers.forEach((marker, id) => {
+            if (!visibleCafeIds.has(id)) {
+                marker.remove()
+                currentMarkers.delete(id)
+            }
+        })
+
+        // 新しく表示すべきマーカーを追加
+        visibleCafes.forEach(cafe => {
+            if (!currentMarkers.has(cafe.id)) {
+                const markerEl = CafeMarkerElement(cafe.media_url, cafe.store_name)
+                const marker = new maplibregl.Marker({ element: markerEl })
+                    .setLngLat([cafe.lng, cafe.lat])
+                    .addTo(mapRef.current!)
+                
+                currentMarkers.set(cafe.id, marker)
+                
+                // マーカークリック時の処理
+                markerEl.addEventListener('click', () => {
+                    setSelected(cafe)
+                    if (mapRef.current) {
+                        const map = mapRef.current
+                        const mapContainer = map.getContainer()
+                        const mapWidth = mapContainer.offsetWidth
+                        
+                        const isMobile = mapWidth <= 768
+                        
+                        if (isMobile) {
+                            map.flyTo({
+                                center: [cafe.lng, cafe.lat]
+                            })
+                        } else {
+                            const targetX = mapWidth * 0.25
+                            const centerX = mapWidth * 0.5
+                            const offsetX = centerX - targetX
+                            
+                            const bounds = map.getBounds()
+                            const lngRange = bounds.getEast() - bounds.getWest()
+                            const lngOffset = (offsetX / mapWidth) * lngRange
+                            
+                            map.flyTo({
+                                center: [cafe.lng + lngOffset, cafe.lat]
+                            })
+                        }
+                    }
+                })
+            }
+        })
+    }, [mapLoaded, getVisibleCafes])
 
     const handleSearch = (query: string) => {
         const filteredCafes = searchCafes(query)
@@ -43,7 +117,8 @@ export default function MapView() {
             if (isMobile) {
                 // スマホの場合は中央に表示
                 map.flyTo({
-                    center: [firstCafe.lng, firstCafe.lat]
+                    center: [firstCafe.lng, firstCafe.lat],
+                    zoom: 15
                 })
             } else {
                 // デスクトップの場合は画面左半分の中央にマーカーを表示
@@ -57,9 +132,13 @@ export default function MapView() {
                 const lngOffset = (offsetX / mapWidth) * lngRange
                 
                 map.flyTo({
-                    center: [firstCafe.lng + lngOffset, firstCafe.lat]
+                    center: [firstCafe.lng + lngOffset, firstCafe.lat],
+                    zoom: 15
                 })
             }
+            
+            // 移動完了後にマーカーを更新
+            setTimeout(() => updateMarkers(), 500)
         } else if (filteredCafes.length === 0) {
             // 検索結果がない場合は選択をクリア
             setSelected(null)
@@ -87,65 +166,22 @@ export default function MapView() {
             setMapLoaded(true)
         })
 
+        // 地図の移動・ズーム時にマーカーを更新
+        map.on('moveend', updateMarkers)
+        map.on('zoomend', updateMarkers)
+
         // クリーンアップ関数：useEffectが終了するときmapをremoveする
         return () => {
         map.remove()
         }
-    },[])
+    }, [updateMarkers])
 
-    // マップが読み込まれたときに全てのマーカーを追加
+    // マップが読み込まれたときに初回マーカー表示
     useEffect(() => {
-        if (!mapRef.current || !mapLoaded) return
-
-        // 既存のマーカーをすべて削除
-        markersRef.current.forEach(marker => marker.remove())
-        markersRef.current = []
-
-        // 新しいマーカーを追加（常に全カフェデータを使用）
-        allCafes.forEach(cafe => {
-            const markerEl = CafeMarkerElement(cafe.media_url, cafe.store_name)
-            const marker = new maplibregl.Marker({ element: markerEl })
-              .setLngLat([cafe.lng, cafe.lat])
-              .addTo(mapRef.current!)
-            
-            markersRef.current.push(marker)
-            
-            // マーカークリック時の処理
-            markerEl.addEventListener('click', () => {
-                setSelected(cafe)
-                // スマホの場合は単純に中央に移動、デスクトップの場合は左半分に移動
-                if (mapRef.current) {
-                    const map = mapRef.current
-                    const mapContainer = map.getContainer()
-                    const mapWidth = mapContainer.offsetWidth
-                    
-                    // スマホサイズかどうかの判定
-                    const isMobile = mapWidth <= 768
-                    
-                    if (isMobile) {
-                        // スマホの場合は中央に表示
-                        map.flyTo({
-                            center: [cafe.lng, cafe.lat]
-                        })
-                    } else {
-                        // デスクトップの場合は画面左半分の中央にマーカーを表示
-                        const targetX = mapWidth * 0.25 // 左半分の中央
-                        const centerX = mapWidth * 0.5   // 画面中央
-                        const offsetX = centerX - targetX
-                        
-                        // 経度のオフセットを計算（ピクセル差を経度差に変換）
-                        const bounds = map.getBounds()
-                        const lngRange = bounds.getEast() - bounds.getWest()
-                        const lngOffset = (offsetX / mapWidth) * lngRange
-                        
-                        map.flyTo({
-                            center: [cafe.lng + lngOffset, cafe.lat]
-                        })
-                    }
-                }
-            })
-          })
-    }, [mapLoaded])
+        if (mapLoaded) {
+            updateMarkers()
+        }
+    }, [mapLoaded, updateMarkers])
 
     // ref={mapContainerRef}で、以下のdiv要素をmapContainerRef.currentに入れる
     return (
