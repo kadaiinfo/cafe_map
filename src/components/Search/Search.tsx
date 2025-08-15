@@ -20,7 +20,7 @@ export default function Search({ onSearch }: SearchProps) {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="店名や住所で検索..."
+          placeholder="店名や住所で検索...ああ"
           className="search-input"
         />
         <button type="submit" className="search-button">

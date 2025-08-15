@@ -32,24 +32,34 @@ export default function MapView() {
             const firstCafe = filteredCafes[0]
             setSelected(firstCafe)
             
-            // マーカーを画面左半分の中央に移動（マーカークリック時と同じ挙動）
+            // マーカークリック時と同じ挙動
             const map = mapRef.current
             const mapContainer = map.getContainer()
             const mapWidth = mapContainer.offsetWidth
             
-            // 画面左半分の中央にマーカーを表示するためのオフセットを計算
-            const targetX = mapWidth * 0.25 // 左半分の中央
-            const centerX = mapWidth * 0.5   // 画面中央
-            const offsetX = centerX - targetX
+            // スマホサイズかどうかの判定
+            const isMobile = mapWidth <= 768
             
-            // 経度のオフセットを計算（ピクセル差を経度差に変換）
-            const bounds = map.getBounds()
-            const lngRange = bounds.getEast() - bounds.getWest()
-            const lngOffset = (offsetX / mapWidth) * lngRange
-            
-            map.flyTo({
-                center: [firstCafe.lng + lngOffset, firstCafe.lat]
-            })
+            if (isMobile) {
+                // スマホの場合は中央に表示
+                map.flyTo({
+                    center: [firstCafe.lng, firstCafe.lat]
+                })
+            } else {
+                // デスクトップの場合は画面左半分の中央にマーカーを表示
+                const targetX = mapWidth * 0.25 // 左半分の中央
+                const centerX = mapWidth * 0.5   // 画面中央
+                const offsetX = centerX - targetX
+                
+                // 経度のオフセットを計算（ピクセル差を経度差に変換）
+                const bounds = map.getBounds()
+                const lngRange = bounds.getEast() - bounds.getWest()
+                const lngOffset = (offsetX / mapWidth) * lngRange
+                
+                map.flyTo({
+                    center: [firstCafe.lng + lngOffset, firstCafe.lat]
+                })
+            }
         } else if (filteredCafes.length === 0) {
             // 検索結果がない場合は選択をクリア
             setSelected(null)
@@ -103,25 +113,35 @@ export default function MapView() {
             // マーカークリック時の処理
             markerEl.addEventListener('click', () => {
                 setSelected(cafe)
-                // マーカーを画面左半分の中央に移動
+                // スマホの場合は単純に中央に移動、デスクトップの場合は左半分に移動
                 if (mapRef.current) {
                     const map = mapRef.current
                     const mapContainer = map.getContainer()
                     const mapWidth = mapContainer.offsetWidth
                     
-                    // 画面左半分の中央にマーカーを表示するためのオフセットを計算
-                    const targetX = mapWidth * 0.25 // 左半分の中央
-                    const centerX = mapWidth * 0.5   // 画面中央
-                    const offsetX = centerX - targetX
+                    // スマホサイズかどうかの判定
+                    const isMobile = mapWidth <= 768
                     
-                    // 経度のオフセットを計算（ピクセル差を経度差に変換）
-                    const bounds = map.getBounds()
-                    const lngRange = bounds.getEast() - bounds.getWest()
-                    const lngOffset = (offsetX / mapWidth) * lngRange
-                    
-                    map.flyTo({
-                        center: [cafe.lng + lngOffset, cafe.lat]
-                    })
+                    if (isMobile) {
+                        // スマホの場合は中央に表示
+                        map.flyTo({
+                            center: [cafe.lng, cafe.lat]
+                        })
+                    } else {
+                        // デスクトップの場合は画面左半分の中央にマーカーを表示
+                        const targetX = mapWidth * 0.25 // 左半分の中央
+                        const centerX = mapWidth * 0.5   // 画面中央
+                        const offsetX = centerX - targetX
+                        
+                        // 経度のオフセットを計算（ピクセル差を経度差に変換）
+                        const bounds = map.getBounds()
+                        const lngRange = bounds.getEast() - bounds.getWest()
+                        const lngOffset = (offsetX / mapWidth) * lngRange
+                        
+                        map.flyTo({
+                            center: [cafe.lng + lngOffset, cafe.lat]
+                        })
+                    }
                 }
             })
           })
