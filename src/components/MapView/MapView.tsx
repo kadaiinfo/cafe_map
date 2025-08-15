@@ -56,9 +56,9 @@ export default function MapView() {
         }
     }
 
-    const handleClearSearch = () => {
-        setSelected(null)
-    }
+    // const handleClearSearch = () => {
+    //     setSelected(null)
+    // }
 
     useEffect(() => {
         if (!mapContainerRef.current) return
