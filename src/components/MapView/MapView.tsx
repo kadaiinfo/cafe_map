@@ -2,7 +2,7 @@ import { useState,useEffect, useRef, useCallback } from "react"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import "./MapView.css"
-import { getCafeData, searchCafes } from "../../lib/dataClient"
+import { getCafeData, searchCafes, type LightCafe } from "../../lib/dataClient"
 import { CafeMarkerElement } from "./CafeMarker"
 import Information from "../Information/Information.tsx"
 import Search from "../Search/Search.tsx"
@@ -20,7 +20,7 @@ export default function MapView() {
     const mapContainerRef = useRef(null)
     const mapRef = useRef<maplibregl.Map | null>(null)
     const allCafes = getCafeData() // 全店舗情報を取得する
-    const [selected, setSelected] = useState<typeof allCafes[0] | null>(null)
+    const [selected, setSelected] = useState<LightCafe | null>(null)
     const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map()) // マーカーの参照をMapで管理
     const [mapLoaded, setMapLoaded] = useState(false) // マップの読み込み状態
 
@@ -118,7 +118,7 @@ export default function MapView() {
                 // スマホの場合は中央に表示
                 map.flyTo({
                     center: [firstCafe.lng, firstCafe.lat],
-                    zoom: 15
+                    zoom: 16
                 })
             } else {
                 // デスクトップの場合は画面左半分の中央にマーカーを表示
@@ -133,7 +133,7 @@ export default function MapView() {
                 
                 map.flyTo({
                     center: [firstCafe.lng + lngOffset, firstCafe.lat],
-                    zoom: 15
+                    zoom: 16
                 })
             }
             
@@ -154,9 +154,9 @@ export default function MapView() {
 
         const map = new maplibregl.Map({
         container: mapContainerRef.current, // マップを表示するHTML要素を指定する
-        style: "https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json", // 地図のスタイルを指定
-        center: [130.546634, 31.570480], // 地図の中心座標
-        zoom: 14, // 地図のズームレベル
+        style: "https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json", // 地図のスタイルを指定（日中モード）
+        center: [130.548834, 31.570480], // 地図の中心座標
+        zoom: 16, // 地図のズームレベル
         })
         
         mapRef.current = map

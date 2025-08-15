@@ -1,36 +1,32 @@
 // src/features/map/components/information.tsx
 import { useState, useCallback, useEffect} from "react"
 import "./Information.css"
-type CafePost = {
-    id: string
-    store_name?: string | null
-    address?: string | null
-    caption?: string | null
-    media_url?: string | null
-    thumbnail_url?: string | null   // VIDEO用サムネがある場合
-    permalink?: string | null
-    username?: string | null
-    lat: number
-    lng: number
-    media_type?: "IMAGE" | "VIDEO" | string
-    like_count?: number
-    comments_count?: number
-    timestamp?: string
-}
+import { getCafeDetail, type LightCafe, type DetailedCafe } from "../../lib/dataClient"
   
 type InformationProps = {
-    cafe: CafePost
+    cafe: LightCafe
     onClose?: () => void
 }
   
 export default function Information({ cafe, onClose }: InformationProps) {
-// 画像は VIDEO の場合は thumbnail を優先
-const imgSrc =
-    (cafe.media_type === "VIDEO" ? cafe.thumbnail_url : cafe.media_url) ?? ""
-
+const [detailedCafe, setDetailedCafe] = useState<DetailedCafe | null>(null)
 const [isExpanded, setIsExpanded] = useState(false)
 const [isClosing, setIsClosing] = useState(false)
 const [isMobile, setIsMobile] = useState(false)
+
+// 詳細データを遅延読み込み
+useEffect(() => {
+    if (cafe) {
+        // 新しいカフェが選択されたら詳細データを取得
+        const detail = getCafeDetail(cafe.id)
+        setDetailedCafe(detail)
+    }
+}, [cafe])
+
+// 画像は VIDEO の場合は thumbnail を優先
+const imgSrc = detailedCafe 
+    ? (detailedCafe.media_type === "VIDEO" ? detailedCafe.thumbnail_url : detailedCafe.media_url) ?? ""
+    : cafe.media_url ?? ""
 
 // 画面サイズを監視
 useEffect(() => {
@@ -133,9 +129,9 @@ return (
                     </div>
                 </dl>
 
-                {cafe.caption && (
+                {detailedCafe?.caption && (
                 <p className="info__caption">
-                  {cafe.caption.split('\n').map((line, index, arr) => (
+                  {detailedCafe.caption.split('\n').map((line, index, arr) => (
                     <span key={index}>
                       {line}
                       {index < arr.length - 1 && <br />}
@@ -144,16 +140,16 @@ return (
                 </p>
                 )}
 
-                {cafe.timestamp && (
+                {detailedCafe?.timestamp && (
                 <p className="info__date">
-                  取材日：{new Date(cafe.timestamp).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/')}
+                  取材日：{new Date(detailedCafe.timestamp).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/')}
                 </p>
                 )}
 
-                {cafe.permalink && (
+                {detailedCafe?.permalink && (
                 <a
                     className="info__link"
-                    href={cafe.permalink}
+                    href={detailedCafe.permalink}
                     target="_blank"
                     rel="noopener noreferrer"
                 >

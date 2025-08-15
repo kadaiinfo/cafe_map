@@ -35,6 +35,8 @@
   width: 200px;
   height: 44px;
   box-sizing: border-box;
+  background-color: white !important;
+  color: black !important;
 }
 
 @media (max-width: 768px) {
@@ -45,6 +47,8 @@
     font-size: 16px;
     padding: 14px 16px;
     height: 48px;
+    background-color: white !important;
+    color: black !important;
   }
 }
 
