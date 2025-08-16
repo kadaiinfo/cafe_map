@@ -1,12 +1,14 @@
 import { useState } from "react"
 import "./Search.css"
 import iconImage from "./icon.jpg"
+import mixerIcon from "./mixer.svg"
 
 interface SearchProps {
   onSearch: (query: string) => void
+  onSettingsClick?: () => void
 }
 
-export default function Search({ onSearch }: SearchProps) {
+export default function Search({ onSearch, onSettingsClick }: SearchProps) {
   const [query, setQuery] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -27,6 +29,16 @@ export default function Search({ onSearch }: SearchProps) {
             className="search-input"
           />
         </div>
+        {onSettingsClick && (
+          <button 
+            type="button" 
+            onClick={onSettingsClick}
+            className="settings-button"
+            aria-label="設定"
+          >
+            <img src={mixerIcon} alt="設定" className="settings-icon" />
+          </button>
+        )}
       </form>
     </div>
   )

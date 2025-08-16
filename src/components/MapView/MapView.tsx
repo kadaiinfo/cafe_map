@@ -118,6 +118,11 @@ export default function MapView() {
         updateMarkersWithZoom(currentZoom)
     }, [updateMarkersWithZoom, currentZoom])
 
+    const handleSettingsClick = () => {
+        // TODO: 設定メニューの実装（エリア選択、リスト表示など）
+        console.log('設定ボタンがクリックされました')
+    }
+
     const handleSearch = (query: string) => {
         const filteredCafes = searchCafes(query)
         
@@ -214,7 +219,7 @@ export default function MapView() {
     // ref={mapContainerRef}で、以下のdiv要素をmapContainerRef.currentに入れる
     return (
         <div className="map-layout">
-            <Search onSearch={handleSearch} />
+            <Search onSearch={handleSearch} onSettingsClick={handleSettingsClick} />
             <div ref={mapContainerRef} className="map-container" />
             {currentZoom <= ZOOM_THRESHOLD && (
                 <div className="zoom-warning">
