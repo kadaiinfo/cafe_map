@@ -6,6 +6,8 @@ import { getCafeData, searchCafes, type LightCafe } from "../../lib/dataClient"
 import { CafeMarkerElement } from "./CafeMarker"
 import Information from "../Information/Information.tsx"
 import Search from "../Search/Search.tsx"
+import MixerPanel from "../MixerPanel/MixerPanel.tsx"
+import CafeList from "../CafeList/CafeList.tsx"
 
 // 地図を描画するコンポーネント
 // この記事を参考に実装した 
@@ -25,6 +27,8 @@ export default function MapView() {
     const [mapLoaded, setMapLoaded] = useState(false) // マップの読み込み状態
     const [currentZoom, setCurrentZoom] = useState(16) // 現在のズームレベル
     const ZOOM_THRESHOLD = 14 // この値以下だとマーカーを表示しない
+    const [showMixerPanel, setShowMixerPanel] = useState(false) // MixerPanel表示状態
+    const [showCafeList, setShowCafeList] = useState(false) // CafeList表示状態
 
     // 表示範囲内のカフェをフィルタリングする関数
     const getVisibleCafes = useCallback(() => {
@@ -119,8 +123,62 @@ export default function MapView() {
     }, [updateMarkersWithZoom, currentZoom])
 
     const handleSettingsClick = () => {
-        // TODO: 設定メニューの実装（エリア選択、リスト表示など）
-        console.log('設定ボタンがクリックされました')
+        setShowMixerPanel(true)
+    }
+
+    const handleCloseMixerPanel = () => {
+        setShowMixerPanel(false)
+    }
+
+    const handleShowCafeList = () => {
+        setShowMixerPanel(false)
+        setShowCafeList(true)
+    }
+
+    const handleCloseCafeList = () => {
+        setShowCafeList(false)
+    }
+
+    const handleCafeSelect = (cafe: LightCafe) => {
+        setSelected(cafe)
+        
+        // カフェ選択時の地図移動処理（既存のマーカークリック処理と同様）
+        if (mapRef.current) {
+            const map = mapRef.current
+            const mapContainer = map.getContainer()
+            const mapWidth = mapContainer.offsetWidth
+            
+            const isMobile = mapWidth <= 768
+            
+            if (isMobile) {
+                map.flyTo({
+                    center: [cafe.lng, cafe.lat],
+                    zoom: 16
+                })
+            } else {
+                const targetX = mapWidth * 0.25
+                const centerX = mapWidth * 0.5
+                const offsetX = centerX - targetX
+                
+                const bounds = map.getBounds()
+                const lngRange = bounds.getEast() - bounds.getWest()
+                const lngOffset = (offsetX / mapWidth) * lngRange
+                
+                map.flyTo({
+                    center: [cafe.lng + lngOffset, cafe.lat],
+                    zoom: 16
+                })
+            }
+        }
+    }
+
+    const handleAreaSelect = (lng: number, lat: number) => {
+        if (mapRef.current) {
+            mapRef.current.flyTo({
+                center: [lng, lat],
+                zoom: 16
+            })
+        }
     }
 
     const handleSearch = (query: string) => {
@@ -227,6 +285,19 @@ export default function MapView() {
                 </div>
             )}
             {selected && <Information cafe={selected} onClose={() => setSelected(null)} />}
+            {showMixerPanel && (
+                <MixerPanel 
+                    onClose={handleCloseMixerPanel}
+                    onShowCafeList={handleShowCafeList}
+                    onAreaSelect={handleAreaSelect}
+                />
+            )}
+            {showCafeList && (
+                <CafeList 
+                    onCafeSelect={handleCafeSelect}
+                    onClose={handleCloseCafeList}
+                />
+            )}
         </div>
     )
 }
