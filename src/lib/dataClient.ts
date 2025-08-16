@@ -33,9 +33,9 @@ const lightCafeData: LightCafe[] = cafe_data.map(cafe => ({
     id: cafe.id,
     lat: cafe.lat,
     lng: cafe.lng,
-    store_name: cafe.store_name,
-    address: cafe.address,
-    media_url: cafe.media_url // マーカー用の画像のみ
+    store_name: cafe.store_name ?? null,
+    address: cafe.address ?? null,
+    media_url: cafe.media_url ?? null // マーカー用の画像のみ
 }))
 
 // 軽量データを取得
