@@ -1,5 +1,5 @@
 // src/features/map/components/information.tsx
-import { useState, useCallback, useEffect} from "react"
+import { useState, useCallback, useEffect, useRef} from "react"
 import "./Information.css"
 import { getCafeDetail, type LightCafe, type DetailedCafe } from "../../lib/dataClient"
   
@@ -13,6 +13,7 @@ const [detailedCafe, setDetailedCafe] = useState<DetailedCafe | null>(null)
 const [isExpanded, setIsExpanded] = useState(false)
 const [isClosing, setIsClosing] = useState(false)
 const [isMobile, setIsMobile] = useState(false)
+const infoDetailRef = useRef<HTMLDivElement>(null)
 
 // 詳細データを遅延読み込み
 useEffect(() => {
@@ -20,6 +21,15 @@ useEffect(() => {
         // 新しいカフェが選択されたら詳細データを取得
         const detail = getCafeDetail(cafe.id)
         setDetailedCafe(detail)
+        
+        // 展開状態をリセット（モバイルの場合）
+        setIsExpanded(false)
+        setIsClosing(false)
+        
+        // 新しいカフェが選択された時のスクロールリセット
+        if (infoDetailRef.current) {
+            infoDetailRef.current.scrollTop = 0
+        }
     }
 }, [cafe])
 
@@ -57,6 +67,14 @@ const handleToggle = useCallback(() => {
     } else {
         // 開く際はすぐに展開
         setIsExpanded(true)
+        
+        // スライドを開く際にスクロールを一番上にリセット
+        setTimeout(() => {
+            if (infoDetailRef.current) {
+                infoDetailRef.current.scrollTop = 0
+                infoDetailRef.current.scrollTo(0, 0)
+            }
+        }, 0)
     }
 }, [isExpanded, isClosing])
 
@@ -95,7 +113,7 @@ return (
         </div>
 
         {/* 全画面表示される詳細情報 */}
-        <div className="info__detail">
+        <div className="info__detail" ref={infoDetailRef}>
             <div className="info__header">
                 {onClose && (
                 <button className="info__close" onClick={handleClose} aria-label="閉じる">
