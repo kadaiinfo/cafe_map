@@ -117,7 +117,7 @@ return (
             <div className="info__header">
                 {onClose && (
                 <button className="info__close" onClick={handleClose} aria-label="閉じる">
-                    ×
+                    {isMobile ? '▼' : '×'}
                 </button>
                 )}
             </div>

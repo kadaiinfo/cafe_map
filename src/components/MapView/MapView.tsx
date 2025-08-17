@@ -25,10 +25,36 @@ export default function MapView() {
     const [selected, setSelected] = useState<LightCafe | null>(null)
     const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map()) // マーカーの参照をMapで管理
     const [mapLoaded, setMapLoaded] = useState(false) // マップの読み込み状態
-    const [currentZoom, setCurrentZoom] = useState(16) // 現在のズームレベル
-    const ZOOM_THRESHOLD = 14 // この値以下だとマーカーを表示しない
+    const [currentZoom, setCurrentZoom] = useState(17) // 現在のズームレベル
+    const ZOOM_THRESHOLD = 16.5 // この値以下だとマーカーを表示しない
     const [showMixerPanel, setShowMixerPanel] = useState(false) // MixerPanel表示状態
     const [showCafeList, setShowCafeList] = useState(false) // CafeList表示状態
+
+    // 地図の位置とズームレベルを保存/復元する関数
+    const saveMapState = useCallback((center: [number, number], zoom: number) => {
+        const mapState = {
+            center,
+            zoom,
+            timestamp: Date.now()
+        }
+        localStorage.setItem('cafeMapState', JSON.stringify(mapState))
+    }, [])
+
+    const loadMapState = useCallback(() => {
+        try {
+            const saved = localStorage.getItem('cafeMapState')
+            if (saved) {
+                const mapState = JSON.parse(saved)
+                // 24時間以内の保存データのみ有効
+                if (Date.now() - mapState.timestamp < 24 * 60 * 60 * 1000) {
+                    return mapState
+                }
+            }
+        } catch (error) {
+            console.warn('Failed to load map state:', error)
+        }
+        return null
+    }, [])
 
     // 表示範囲内のカフェをフィルタリングする関数
     const getVisibleCafes = useCallback(() => {
@@ -153,7 +179,7 @@ export default function MapView() {
             if (isMobile) {
                 map.flyTo({
                     center: [cafe.lng, cafe.lat],
-                    zoom: 16
+                    zoom: 17
                 })
             } else {
                 const targetX = mapWidth * 0.25
@@ -166,7 +192,7 @@ export default function MapView() {
                 
                 map.flyTo({
                     center: [cafe.lng + lngOffset, cafe.lat],
-                    zoom: 16
+                    zoom: 17
                 })
             }
         }
@@ -176,7 +202,7 @@ export default function MapView() {
         if (mapRef.current) {
             mapRef.current.flyTo({
                 center: [lng, lat],
-                zoom: 16
+                zoom: 17
             })
         }
     }
@@ -201,7 +227,7 @@ export default function MapView() {
                 // スマホの場合は中央に表示
                 map.flyTo({
                     center: [firstCafe.lng, firstCafe.lat],
-                    zoom: 16
+                    zoom: 17
                 })
             } else {
                 // デスクトップの場合は画面左半分の中央にマーカーを表示
@@ -216,7 +242,7 @@ export default function MapView() {
                 
                 map.flyTo({
                     center: [firstCafe.lng + lngOffset, firstCafe.lat],
-                    zoom: 16
+                    zoom: 17
                 })
             }
             
@@ -235,11 +261,16 @@ export default function MapView() {
     useEffect(() => {
         if (!mapContainerRef.current) return
 
+        // 保存された地図状態を復元
+        const savedState = loadMapState()
+        const initialCenter: [number, number] = savedState?.center || [130.5548586, 31.5901844]
+        const initialZoom = savedState?.zoom || 17
+
         const map = new maplibregl.Map({
         container: mapContainerRef.current, // マップを表示するHTML要素を指定する
         style: "https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json", // 地図のスタイルを指定（日中モード）
-        center: [130.548834, 31.570480], // 地図の中心座標
-        zoom: 16, // 地図のズームレベル
+        center: initialCenter, // 地図の中心座標（保存された位置または初期位置）
+        zoom: initialZoom, // 地図のズームレベル（保存されたズームまたは初期ズーム）
         })
         
         mapRef.current = map
@@ -252,13 +283,19 @@ export default function MapView() {
         // 地図の移動時にマーカーを更新
         map.on('moveend', () => {
             const currentMapZoom = map.getZoom()
+            const center = map.getCenter()
             updateMarkersWithZoom(currentMapZoom)
+            // 位置変更を保存
+            saveMapState([center.lng, center.lat], currentMapZoom)
         })
         map.on('zoomend', () => {
             const newZoom = map.getZoom()
+            const center = map.getCenter()
             setCurrentZoom(newZoom)
             // リアルタイムのズーム値を使ってマーカー更新
             updateMarkersWithZoom(newZoom)
+            // ズーム変更を保存
+            saveMapState([center.lng, center.lat], newZoom)
         })
 
         // クリーンアップ関数：useEffectが終了するときmapをremoveする
@@ -279,6 +316,20 @@ export default function MapView() {
         <div className="map-layout">
             <Search onSearch={handleSearch} onSettingsClick={handleSettingsClick} />
             <div ref={mapContainerRef} className="map-container" />
+            {/* <div style={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                background: 'rgba(0, 0, 0, 0.7)',
+                color: 'white',
+                padding: '5px 10px',
+                borderRadius: '5px',
+                fontSize: '12px',
+                fontFamily: 'monospace',
+                zIndex: 1000
+            }}>
+                Zoom: {currentZoom.toFixed(1)}
+            </div> */}
             {currentZoom <= ZOOM_THRESHOLD && (
                 <div className="zoom-warning">
                     <p>表示範囲が広すぎます。ズームしてください 🔍</p>

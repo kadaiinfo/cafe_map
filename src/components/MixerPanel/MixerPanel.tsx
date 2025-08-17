@@ -11,13 +11,13 @@ export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect }: Mi
   const [selectedArea, setSelectedArea] = useState<string>("")
 
   const areas = [
-    { id: "uptown", name: "騎射場", lng: 130.548834, lat: 31.570480 },
-    { id: "all", name: "中央駅", lng: 130.541764, lat: 31.585377 },
-    { id: "central", name: "天文館", lng: 130.557755, lat: 31.591667 },
-    { id: "riverside", name: "名山", lng: 130.540771, lat: 31.612222 },
-    { id: "downtown", name: "谷山", lng: 130.528889, lat: 31.428333 },
+    { id: "uptown", name: "騎射場", lng: 130.5520733, lat: 31.5692252 },
+    { id: "all", name: "中央駅", lng: 130.5439322, lat: 31.5826642 },
+    { id: "central", name: "天文館", lng: 130.5548586, lat: 31.5901844 },
+    { id: "riverside", name: "名山", lng: 130.5582345, lat: 31.5953913 },
+    { id: "downtown", name: "谷山", lng: 130.5229738, lat: 31.5298778 },
     { id: "aira", name: "姶良", lng: 130.635556, lat: 31.728611 },
-    { id: "kirisima", name: "霧島", lng: 130.762222, lat: 31.745556 },
+    { id: "kirisima", name: "国分", lng: 130.7645666, lat: 31.7429681 },
     { id: "ibusuki", name: "指宿", lng: 130.633333, lat: 31.251111 },
     { id: "sendai", name: "川内", lng: 130.301944, lat: 31.814167 },
   ]
