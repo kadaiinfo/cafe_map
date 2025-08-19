@@ -302,15 +302,16 @@ export default function MapView() {
         })
 
         // 地図の移動時にマーカーを更新
-        map.on('moveend', () => {
+        const handleMoveEnd = () => {
             const currentMapZoom = map.getZoom()
             const center = map.getCenter()
             console.log('moveend - zoom:', currentMapZoom, 'cafeDataLoaded:', cafeDataLoaded, 'allCafes.length:', allCafes.length)
             updateMarkersWithZoom(currentMapZoom)
             // 位置変更を保存
             saveMapState([center.lng, center.lat], currentMapZoom)
-        })
-        map.on('zoomend', () => {
+        }
+        
+        const handleZoomEnd = () => {
             const newZoom = map.getZoom()
             const center = map.getCenter()
             setCurrentZoom(newZoom)
@@ -318,13 +319,18 @@ export default function MapView() {
             updateMarkersWithZoom(newZoom)
             // ズーム変更を保存
             saveMapState([center.lng, center.lat], newZoom)
-        })
+        }
+        
+        map.on('moveend', handleMoveEnd)
+        map.on('zoomend', handleZoomEnd)
 
         // クリーンアップ関数：useEffectが終了するときmapをremoveする
         return () => {
-        map.remove()
+            map.off('moveend', handleMoveEnd)
+            map.off('zoomend', handleZoomEnd)
+            map.remove()
         }
-    }, [])
+    }, [loadMapState, updateMarkersWithZoom, saveMapState, cafeDataLoaded, allCafes.length])
 
     // マップとカフェデータが読み込まれたときに初回マーカー表示
     useEffect(() => {
