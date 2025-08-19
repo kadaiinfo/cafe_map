@@ -1,4 +1,4 @@
-// import cafe_data from "../data/instagram_posts_with_coords.json"
+import cafe_data from "../data/instagram_posts_with_coords.json"
 
 // APIからデータを取得する型定義
 type CafeDataFromAPI = {
@@ -50,12 +50,23 @@ export type DetailedCafe = {
 let cafeDataCache: CafeDataFromAPI[] | null = null
 let lightCafeDataCache: LightCafe[] | null = null
 
-// APIからカフェデータを取得
+// 開発環境かどうかを判定
+const isDevelopment = import.meta.env.MODE === 'development'
+
+// APIからカフェデータを取得（開発環境ではローカルデータを使用）
 const fetchCafeDataFromAPI = async (): Promise<CafeDataFromAPI[]> => {
     if (cafeDataCache) {
         return cafeDataCache
     }
     
+    // 開発環境ではローカルデータを使用
+    if (isDevelopment) {
+        console.log('Using local data in development mode')
+        cafeDataCache = cafe_data as CafeDataFromAPI[]
+        return cafeDataCache
+    }
+    
+    // プロダクション環境ではAPIから取得
     try {
         const response = await fetch('/api/fetch_cafedata')
         if (!response.ok) {
@@ -66,7 +77,10 @@ const fetchCafeDataFromAPI = async (): Promise<CafeDataFromAPI[]> => {
         return data
     } catch (error) {
         console.error('Failed to fetch cafe data:', error)
-        throw error
+        // APIが失敗した場合もローカルデータにフォールバック
+        console.warn('Falling back to local data')
+        cafeDataCache = cafe_data as CafeDataFromAPI[]
+        return cafeDataCache
     }
 }
 
