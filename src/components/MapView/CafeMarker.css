@@ -7,6 +7,15 @@
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0,0,0,.3);
     cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* 選択中のマーカー */
+.cafe-marker--selected {
+    border: 4px solid #8B4513;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 6px #8B451340, 0 4px 8px rgba(0,0,0,.4);
+    transform: scale(1.1);
+    z-index: 1000;
 }
 
 /* カフェマーカーの画像 */
