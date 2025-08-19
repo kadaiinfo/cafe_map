@@ -25,6 +25,7 @@ export default function MapView() {
     const [cafeDataLoaded, setCafeDataLoaded] = useState(false) // カフェデータの読み込み状態
     const [selected, setSelected] = useState<LightCafe | null>(null)
     const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map()) // マーカーの参照をMapで管理
+    const currentPopupRef = useRef<maplibregl.Popup | null>(null) // 現在表示中のポップアップの参照
     const [mapLoaded, setMapLoaded] = useState(false) // マップの読み込み状態
     const [currentZoom, setCurrentZoom] = useState(17) // 現在のズームレベル
     const ZOOM_THRESHOLD = 16.5 // この値以下だとマーカーを表示しない
@@ -85,6 +86,56 @@ export default function MapView() {
         )
     }, [allCafes, cafeDataLoaded])
 
+    // ポップアップを管理する関数
+    const showPopup = useCallback((cafe: LightCafe) => {
+        console.log('showPopup called with cafe:', cafe.store_name, 'mapRef:', !!mapRef.current)
+        if (!mapRef.current) {
+            console.log('mapRef.current is null, returning')
+            return
+        }
+
+        // 既存のポップアップがあれば削除
+        if (currentPopupRef.current) {
+            console.log('Removing existing popup')
+            currentPopupRef.current.remove()
+            currentPopupRef.current = null
+        }
+
+        // 新しいポップアップを作成
+        const popup = new maplibregl.Popup({
+            offset: 35,
+            closeButton: false,
+            className: 'custom-popup'
+        }).setText(cafe.store_name || 'カフェ')
+
+        console.log('Creating popup with text:', cafe.store_name || 'カフェ')
+
+        // 少し遅延させてポップアップを地図に追加
+        setTimeout(() => {
+            if (mapRef.current) {
+                popup.setLngLat([cafe.lng, cafe.lat]).addTo(mapRef.current)
+                currentPopupRef.current = popup
+                console.log('Popup added to map (delayed)')
+            }
+        }, 10)
+        
+        // デバッグ用：ポップアップ要素を確認
+        setTimeout(() => {
+            const popupElements = document.querySelectorAll('.maplibregl-popup')
+            console.log('Popup elements found:', popupElements.length)
+            popupElements.forEach((el, index) => {
+                console.log(`Popup ${index}:`, el, 'visible:', window.getComputedStyle(el).display !== 'none')
+            })
+        }, 100)
+    }, [])
+
+    const hidePopup = useCallback(() => {
+        if (currentPopupRef.current) {
+            currentPopupRef.current.remove()
+            currentPopupRef.current = null
+        }
+    }, [])
+
     // ズーム値を指定してマーカーを更新する関数（閾値以下の場合のみ削除処理）
     const updateMarkersWithZoom = useCallback((zoom: number) => {
         if (!mapRef.current || !cafeDataLoaded) {
@@ -128,6 +179,7 @@ export default function MapView() {
                 
                 // マーカークリック時の処理
                 markerEl.addEventListener('click', () => {
+                    console.log('Marker clicked:', cafe.store_name)
                     setSelected(cafe)
                     if (mapRef.current) {
                         const map = mapRef.current
@@ -332,6 +384,16 @@ export default function MapView() {
             updateMarkers()
         }
     }, [mapLoaded, cafeDataLoaded, updateMarkers])
+
+    // 選択されたカフェが変更された時にポップアップを表示/非表示
+    useEffect(() => {
+        console.log('selected changed:', selected?.store_name || 'null')
+        if (selected) {
+            showPopup(selected)
+        } else {
+            hidePopup()
+        }
+    }, [selected, showPopup, hidePopup])
 
     // ref={mapContainerRef}で、以下のdiv要素をmapContainerRef.currentに入れる
     return (
