@@ -7,6 +7,7 @@
     overflow: hidden;
     box-shadow: 0 2px 4px rgba(0,0,0,.3);
     cursor: pointer;
+    position: relative;
 }
 
 /* カフェマーカーの画像 */
@@ -25,5 +26,52 @@
     align-items: center;
     justify-content: center;
     font-size: 12px;
+}
+
+/* 選択時の吹き出し */
+.cafe-marker__popup {
+    position: absolute;
+    top: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #FF6B6B;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    animation: popupBounce 0.3s ease-out;
+    z-index: 1001;
+}
+
+/* 吹き出しの矢印 */
+.cafe-marker__popup::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid #FF6B6B;
+}
+
+/* 吹き出しのアニメーション */
+@keyframes popupBounce {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(10px) scale(0.8);
+    }
+    70% {
+        transform: translateX(-50%) translateY(-5px) scale(1.05);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
 }
   
