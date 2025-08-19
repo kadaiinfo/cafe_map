@@ -74,7 +74,7 @@ export default function MapView() {
 
     // 表示範囲内のカフェをフィルタリングする関数
     const getVisibleCafes = useCallback(() => {
-        if (!mapRef.current) return []
+        if (!mapRef.current || !cafeDataLoaded || allCafes.length === 0) return []
         
         const bounds = mapRef.current.getBounds()
         return allCafes.filter(cafe => 
@@ -83,11 +83,11 @@ export default function MapView() {
             cafe.lat >= bounds.getSouth() &&
             cafe.lat <= bounds.getNorth()
         )
-    }, [allCafes])
+    }, [allCafes, cafeDataLoaded])
 
     // ズーム値を指定してマーカーを更新する関数（閾値以下の場合のみ削除処理）
     const updateMarkersWithZoom = useCallback((zoom: number) => {
-        if (!mapRef.current) {
+        if (!mapRef.current || !cafeDataLoaded) {
             return
         }
 
@@ -157,7 +157,7 @@ export default function MapView() {
                 })
             }
         })
-    }, [getVisibleCafes, ZOOM_THRESHOLD])
+    }, [getVisibleCafes, ZOOM_THRESHOLD, cafeDataLoaded])
 
     // マーカーを更新する関数（currentZoom使用）
     const updateMarkers = useCallback(() => {
