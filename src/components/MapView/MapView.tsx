@@ -25,7 +25,6 @@ export default function MapView() {
     const [cafeDataLoaded, setCafeDataLoaded] = useState(false) // カフェデータの読み込み状態
     const [selected, setSelected] = useState<LightCafe | null>(null)
     const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map()) // マーカーの参照をMapで管理
-    const markerElementsRef = useRef<Map<string, HTMLDivElement>>(new Map()) // マーカー要素の参照をMapで管理
     const [mapLoaded, setMapLoaded] = useState(false) // マップの読み込み状態
     const [currentZoom, setCurrentZoom] = useState(17) // 現在のズームレベル
     const ZOOM_THRESHOLD = 16.5 // この値以下だとマーカーを表示しない
@@ -86,17 +85,6 @@ export default function MapView() {
         )
     }, [allCafes, cafeDataLoaded])
 
-    // マーカーの選択状態を更新する関数
-    const updateMarkerSelection = useCallback((selectedCafeId: string | null) => {
-        markerElementsRef.current.forEach((element, cafeId) => {
-            if (cafeId === selectedCafeId) {
-                element.classList.add('cafe-marker--selected')
-            } else {
-                element.classList.remove('cafe-marker--selected')
-            }
-        })
-    }, [])
-
     // ズーム値を指定してマーカーを更新する関数（閾値以下の場合のみ削除処理）
     const updateMarkersWithZoom = useCallback((zoom: number) => {
         if (!mapRef.current || !cafeDataLoaded) {
@@ -110,7 +98,6 @@ export default function MapView() {
                 marker.remove()
             })
             currentMarkers.clear()
-            markerElementsRef.current.clear()
             return
         }
 
@@ -126,7 +113,6 @@ export default function MapView() {
             if (!visibleCafeIds.has(id)) {
                 marker.remove()
                 currentMarkers.delete(id)
-                markerElementsRef.current.delete(id)
             }
         })
 
@@ -139,12 +125,6 @@ export default function MapView() {
                     .addTo(mapRef.current!)
                 
                 currentMarkers.set(cafe.id, marker)
-                markerElementsRef.current.set(cafe.id, markerEl)
-                
-                // 選択状態を反映
-                if (selected && selected.id === cafe.id) {
-                    markerEl.classList.add('cafe-marker--selected')
-                }
                 
                 // マーカークリック時の処理
                 markerEl.addEventListener('click', () => {
@@ -352,11 +332,6 @@ export default function MapView() {
             updateMarkers()
         }
     }, [mapLoaded, cafeDataLoaded, updateMarkers])
-
-    // 選択されたカフェが変更された時にマーカーの選択状態を更新
-    useEffect(() => {
-        updateMarkerSelection(selected?.id || null)
-    }, [selected, updateMarkerSelection])
 
     // ref={mapContainerRef}で、以下のdiv要素をmapContainerRef.currentに入れる
     return (
