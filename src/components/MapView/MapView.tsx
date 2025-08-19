@@ -74,15 +74,20 @@ export default function MapView() {
 
     // 表示範囲内のカフェをフィルタリングする関数
     const getVisibleCafes = useCallback(() => {
-        if (!mapRef.current || !cafeDataLoaded || allCafes.length === 0) return []
+        if (!mapRef.current || !cafeDataLoaded || allCafes.length === 0) {
+            console.log('getVisibleCafes early return:', { mapRef: !!mapRef.current, cafeDataLoaded, allCafesLength: allCafes.length })
+            return []
+        }
         
         const bounds = mapRef.current.getBounds()
-        return allCafes.filter(cafe => 
+        const visibleCafes = allCafes.filter(cafe => 
             cafe.lng >= bounds.getWest() &&
             cafe.lng <= bounds.getEast() &&
             cafe.lat >= bounds.getSouth() &&
             cafe.lat <= bounds.getNorth()
         )
+        console.log('getVisibleCafes result:', visibleCafes.length, 'out of', allCafes.length)
+        return visibleCafes
     }, [allCafes, cafeDataLoaded])
 
     // ズーム値を指定してマーカーを更新する関数（閾値以下の場合のみ削除処理）
@@ -300,6 +305,7 @@ export default function MapView() {
         map.on('moveend', () => {
             const currentMapZoom = map.getZoom()
             const center = map.getCenter()
+            console.log('moveend - zoom:', currentMapZoom, 'cafeDataLoaded:', cafeDataLoaded, 'allCafes.length:', allCafes.length)
             updateMarkersWithZoom(currentMapZoom)
             // 位置変更を保存
             saveMapState([center.lng, center.lat], currentMapZoom)
