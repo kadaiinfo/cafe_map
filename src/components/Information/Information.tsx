@@ -19,8 +19,16 @@ const infoDetailRef = useRef<HTMLDivElement>(null)
 useEffect(() => {
     if (cafe) {
         // 新しいカフェが選択されたら詳細データを取得
-        const detail = getCafeDetail(cafe.id)
-        setDetailedCafe(detail)
+        const loadDetail = async () => {
+            try {
+                const detail = await getCafeDetail(cafe.id)
+                setDetailedCafe(detail)
+            } catch (error) {
+                console.error('Failed to load cafe detail:', error)
+                setDetailedCafe(null)
+            }
+        }
+        loadDetail()
         
         // 展開状態をリセット（モバイルの場合）
         setIsExpanded(false)

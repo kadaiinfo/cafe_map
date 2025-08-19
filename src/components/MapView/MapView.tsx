@@ -21,7 +21,8 @@ export default function MapView() {
 
     const mapContainerRef = useRef(null)
     const mapRef = useRef<maplibregl.Map | null>(null)
-    const allCafes = getCafeData() // 全店舗情報を取得する
+    const [allCafes, setAllCafes] = useState<LightCafe[]>([]) // 全店舗情報
+    const [cafeDataLoaded, setCafeDataLoaded] = useState(false) // カフェデータの読み込み状態
     const [selected, setSelected] = useState<LightCafe | null>(null)
     const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map()) // マーカーの参照をMapで管理
     const [mapLoaded, setMapLoaded] = useState(false) // マップの読み込み状態
@@ -29,6 +30,21 @@ export default function MapView() {
     const ZOOM_THRESHOLD = 16.5 // この値以下だとマーカーを表示しない
     const [showMixerPanel, setShowMixerPanel] = useState(false) // MixerPanel表示状態
     const [showCafeList, setShowCafeList] = useState(false) // CafeList表示状態
+
+    // カフェデータを読み込む
+    useEffect(() => {
+        const loadCafeData = async () => {
+            try {
+                const data = await getCafeData()
+                setAllCafes(data)
+                setCafeDataLoaded(true)
+            } catch (error) {
+                console.error('Failed to load cafe data:', error)
+                setCafeDataLoaded(false)
+            }
+        }
+        loadCafeData()
+    }, [])
 
     // 地図の位置とズームレベルを保存/復元する関数
     const saveMapState = useCallback((center: [number, number], zoom: number) => {
@@ -207,8 +223,8 @@ export default function MapView() {
         }
     }
 
-    const handleSearch = (query: string) => {
-        const filteredCafes = searchCafes(query)
+    const handleSearch = async (query: string) => {
+        const filteredCafes = await searchCafes(query)
         
         // 検索結果がある場合、最初のカフェに移動して選択
         if (filteredCafes.length > 0 && mapRef.current && mapLoaded && query.trim()) {
@@ -304,18 +320,32 @@ export default function MapView() {
         }
     }, [])
 
-    // マップが読み込まれたときに初回マーカー表示
+    // マップとカフェデータが読み込まれたときに初回マーカー表示
     useEffect(() => {
-        if (mapLoaded) {
+        if (mapLoaded && cafeDataLoaded) {
             updateMarkers()
         }
-    }, [mapLoaded, updateMarkers])
+    }, [mapLoaded, cafeDataLoaded, updateMarkers])
 
     // ref={mapContainerRef}で、以下のdiv要素をmapContainerRef.currentに入れる
     return (
         <div className="map-layout">
             <Search onSearch={handleSearch} onSettingsClick={handleSettingsClick} />
             <div ref={mapContainerRef} className="map-container" />
+            {!cafeDataLoaded && (
+                <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    padding: '20px',
+                    borderRadius: '8px',
+                    zIndex: 2000
+                }}>
+                    カフェデータを読み込み中...
+                </div>
+            )}
             {/* <div style={{
                 position: 'absolute',
                 top: '10px',
