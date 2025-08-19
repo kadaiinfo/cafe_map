@@ -82,7 +82,7 @@ const generateLightCafeData = (apiData: CafeDataFromAPI[]): LightCafe[] => {
     }))
 }
 
-// 軽量データを取得（非同期）
+// 軽量データを取得
 export const getCafeData = async (): Promise<LightCafe[]> => {
     if (lightCafeDataCache) {
         return lightCafeDataCache
@@ -93,14 +93,14 @@ export const getCafeData = async (): Promise<LightCafe[]> => {
     return lightCafeDataCache
 }
 
-// 詳細データを取得（IDベース、非同期）
+// 詳細データを取得
 export const getCafeDetail = async (id: string): Promise<DetailedCafe | null> => {
     const apiData = await fetchCafeDataFromAPI()
     const cafe = apiData.find(cafe => cafe.id === id)
     return cafe || null
 }
 
-// 検索機能（軽量データベース、非同期）
+// 検索機能
 export const searchCafes = async (query: string): Promise<LightCafe[]> => {
     const lightData = await getCafeData()
     

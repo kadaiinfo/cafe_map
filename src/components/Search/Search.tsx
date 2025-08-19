@@ -25,7 +25,7 @@ export default function Search({ onSearch, onSettingsClick }: SearchProps) {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="店名や住所で検索...あああ"
+            placeholder="店名や住所で検索..."
             className="search-input"
           />
         </div>
