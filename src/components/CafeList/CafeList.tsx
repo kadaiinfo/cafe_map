@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import "./CafeList.css"
 import { getCafeData, type LightCafe } from "../../lib/dataClient"
 
@@ -8,11 +8,23 @@ interface CafeListProps {
 }
 
 export default function CafeList({ onCafeSelect, onClose }: CafeListProps) {
-  const allCafes = getCafeData()
+  const [allCafes, setAllCafes] = useState<LightCafe[]>([])
   const [searchQuery, setSearchQuery] = useState("")
 
+  useEffect(() => {
+    const loadCafes = async () => {
+      try {
+        const cafes = await getCafeData()
+        setAllCafes(cafes)
+      } catch (error) {
+        console.error('Failed to load cafes:', error)
+      }
+    }
+    loadCafes()
+  }, [])
+
   // 検索フィルタリング
-  const filteredCafes = allCafes.filter(cafe => 
+  const filteredCafes = allCafes.filter((cafe: LightCafe) => 
     cafe.store_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     cafe.address?.toLowerCase().includes(searchQuery.toLowerCase())
   )
@@ -51,7 +63,7 @@ export default function CafeList({ onCafeSelect, onClose }: CafeListProps) {
         </div>
         
         <div className="cafe-list__items">
-          {filteredCafes.map((cafe) => (
+          {filteredCafes.map((cafe: LightCafe) => (
             <div 
               key={cafe.id} 
               className="cafe-list__item"

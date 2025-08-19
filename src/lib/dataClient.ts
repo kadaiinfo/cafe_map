@@ -1,4 +1,4 @@
-import cafe_data from "../data/instagram_posts_with_coords.json"
+// import cafe_data from "../data/instagram_posts_with_coords.json"
 
 // APIからデータを取得する型定義
 type CafeDataFromAPI = {
