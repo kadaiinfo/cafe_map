@@ -182,6 +182,18 @@ return (
                     Instagramで見る
                 </a>
                 )}
+
+                {/* 検索リンク */}
+                <a
+                    className="info__link"
+                    href={`https://www.google.com/search?q=${encodeURIComponent((cafe.store_name || '') + ' 鹿児島')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Google検索
+                </a>
+                
+
                 <a
                     className="info__link"
                     target="_blank"
