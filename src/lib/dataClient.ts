@@ -1,4 +1,4 @@
-import cafe_data from "../data/instagram_posts_with_coords.json"
+import cafe_data from "../data/cafe_data_kv.json"
 
 // APIからデータを取得する型定義
 type CafeDataFromAPI = {
@@ -19,7 +19,7 @@ type CafeDataFromAPI = {
 }
 
 // 軽量データ構造（地図表示用）
-export type LightCafe = {
+export type Cafe = {
     id: string
     lat: number
     lng: number
@@ -47,23 +47,23 @@ export type DetailedCafe = {
 }
 
 // APIから取得したデータのキャッシュ
-let cafeDataCache: CafeDataFromAPI[] | null = null
-let lightCafeDataCache: LightCafe[] | null = null
+let apiDataCache: CafeDataFromAPI[] | null = null
+let cafeDataCache: Cafe[] | null = null
 
 // 開発環境かどうかを判定
 const isDevelopment = import.meta.env.MODE === 'development'
 
 // APIからカフェデータを取得（開発環境ではローカルデータを使用）
 const fetchCafeDataFromAPI = async (): Promise<CafeDataFromAPI[]> => {
-    if (cafeDataCache) {
-        return cafeDataCache
+    if (apiDataCache) {
+        return apiDataCache
     }
     
     // 開発環境ではローカルデータを使用
     if (isDevelopment) {
         console.log('Using local data in development mode')
-        cafeDataCache = cafe_data as CafeDataFromAPI[]
-        return cafeDataCache
+        apiDataCache = cafe_data as CafeDataFromAPI[]
+        return apiDataCache
     }
     
     // プロダクション環境ではAPIから取得
@@ -73,19 +73,19 @@ const fetchCafeDataFromAPI = async (): Promise<CafeDataFromAPI[]> => {
             throw new Error(`HTTP error! status: ${response.status}`)
         }
         const data: CafeDataFromAPI[] = await response.json()
-        cafeDataCache = data
+        apiDataCache = data
         return data
     } catch (error) {
         console.error('Failed to fetch cafe data:', error)
         // APIが失敗した場合もローカルデータにフォールバック
         console.warn('Falling back to local data')
-        cafeDataCache = cafe_data as CafeDataFromAPI[]
-        return cafeDataCache
+        apiDataCache = cafe_data as CafeDataFromAPI[]
+        return apiDataCache
     }
 }
 
 // 軽量データを生成
-const generateLightCafeData = (apiData: CafeDataFromAPI[]): LightCafe[] => {
+const generateCafeData = (apiData: CafeDataFromAPI[]): Cafe[] => {
     return apiData.map(cafe => ({
         id: cafe.id,
         lat: cafe.lat,
@@ -97,14 +97,14 @@ const generateLightCafeData = (apiData: CafeDataFromAPI[]): LightCafe[] => {
 }
 
 // 軽量データを取得
-export const getCafeData = async (): Promise<LightCafe[]> => {
-    if (lightCafeDataCache) {
-        return lightCafeDataCache
+export const getCafeData = async (): Promise<Cafe[]> => {
+    if (cafeDataCache) {
+        return cafeDataCache
     }
     
     const apiData = await fetchCafeDataFromAPI()
-    lightCafeDataCache = generateLightCafeData(apiData)
-    return lightCafeDataCache
+    cafeDataCache = generateCafeData(apiData)
+    return cafeDataCache
 }
 
 // 詳細データを取得
@@ -115,15 +115,15 @@ export const getCafeDetail = async (id: string): Promise<DetailedCafe | null> =>
 }
 
 // 検索機能
-export const searchCafes = async (query: string): Promise<LightCafe[]> => {
-    const lightData = await getCafeData()
+export const searchCafes = async (query: string): Promise<Cafe[]> => {
+    const cafeData = await getCafeData()
     
     if (!query.trim()) {
-        return lightData
+        return cafeData
     }
     
     const searchTerm = query.toLowerCase()
-    return lightData.filter(cafe => {
+    return cafeData.filter(cafe => {
         const storeName = cafe.store_name ? cafe.store_name.toLowerCase() : ''
         const address = cafe.address ? cafe.address.toLowerCase() : ''
         return storeName.includes(searchTerm) || address.includes(searchTerm)

@@ -1,10 +1,10 @@
 // src/features/map/components/information.tsx
 import { useState, useCallback, useEffect, useRef} from "react"
 import "./Information.css"
-import { getCafeDetail, type LightCafe, type DetailedCafe } from "../../lib/dataClient"
+import { getCafeDetail, type Cafe, type DetailedCafe } from "../../lib/dataClient"
   
 type InformationProps = {
-    cafe: LightCafe
+    cafe: Cafe
     onClose?: () => void
 }
   

@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react"
 import "./CafeList.css"
-import { getCafeData, type LightCafe } from "../../lib/dataClient"
+import { getCafeData, type Cafe } from "../../lib/dataClient"
 
 interface CafeListProps {
-  onCafeSelect: (cafe: LightCafe) => void
+  onCafeSelect: (cafe: Cafe) => void
   onClose: () => void
 }
 
 export default function CafeList({ onCafeSelect, onClose }: CafeListProps) {
-  const [allCafes, setAllCafes] = useState<LightCafe[]>([])
+  const [allCafes, setAllCafes] = useState<Cafe[]>([])
   const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {
@@ -24,12 +24,12 @@ export default function CafeList({ onCafeSelect, onClose }: CafeListProps) {
   }, [])
 
   // 検索フィルタリング
-  const filteredCafes = allCafes.filter((cafe: LightCafe) => 
+  const filteredCafes = allCafes.filter((cafe: Cafe) => 
     cafe.store_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
     cafe.address?.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const handleCafeClick = (cafe: LightCafe) => {
+  const handleCafeClick = (cafe: Cafe) => {
     onCafeSelect(cafe)
     onClose() // リスト選択後は閉じる
   }
@@ -63,7 +63,7 @@ export default function CafeList({ onCafeSelect, onClose }: CafeListProps) {
         </div>
         
         <div className="cafe-list__items">
-          {filteredCafes.map((cafe: LightCafe) => (
+          {filteredCafes.map((cafe: Cafe) => (
             <div 
               key={cafe.id} 
               className="cafe-list__item"
