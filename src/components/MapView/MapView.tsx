@@ -167,8 +167,8 @@ export default function MapView() {
             }
         })
 
-        // 新しく表示すべきマーカーを追加
-        visibleCafes.forEach(cafe => {
+        // 新しく表示すべきマーカーを追加（逆順で処理して最新の情報を前面に）
+        visibleCafes.reverse().forEach(cafe => {
             if (!currentMarkers.has(cafe.id)) {
                 const markerEl = CafeMarkerElement(cafe.media_url, cafe.store_name)
                 const marker = new maplibregl.Marker({ element: markerEl })
