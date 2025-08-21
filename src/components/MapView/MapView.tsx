@@ -28,7 +28,7 @@ export default function MapView() {
     const currentPopupRef = useRef<maplibregl.Popup | null>(null) // 現在表示中のポップアップの参照
     const [mapLoaded, setMapLoaded] = useState(false) // マップの読み込み状態
     const [currentZoom, setCurrentZoom] = useState(17) // 現在のズームレベル
-    const ZOOM_THRESHOLD = 14 // この値以下だとマーカーを表示しない
+    const ZOOM_THRESHOLD = 12 // この値以下だとマーカーを表示しない
     const [showMixerPanel, setShowMixerPanel] = useState(false) // MixerPanel表示状態
     const [showCafeList, setShowCafeList] = useState(false) // CafeList表示状態
 
