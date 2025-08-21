@@ -1,69 +1,286 @@
-# React + TypeScript + Vite
+# Cafe Map 🗺️☕
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+鹿児島県内のカフェを地図上で探索できるWebアプリケーションです。Instagramの投稿データを元に、リアルタイムで最新のカフェ情報を表示します。
 
-Currently, two official plugins are available:
+## ✨ 機能
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 📍 **インタラクティブな地図表示**: MapLibre GLを使用した高性能な地図
+- 🔍 **カフェ検索**: 店名や住所での絞り込み検索
+- 📷 **マーカー表示**: 各カフェの写真をマーカーとして表示
+- 💬 **ポップアップ**: マーカークリックで店舗名を表示
+- 📱 **レスポンシブデザイン**: スマートフォン・タブレット・PC対応
+- 🗂️ **カフェ一覧**: 全カフェのリスト表示と選択機能
+- 🎯 **ズーム制御**: パフォーマンス最適化のためのズームレベル制限
+- 💾 **位置記憶**: ページリロード時の地図位置保持
 
-## Expanding the ESLint configuration
+## 🛠️ 技術スタック
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### フロントエンド
+- **React** - UIライブラリ
+- **TypeScript** - 型安全なJavaScript
+- **MapLibre GL** - オープンソース地図ライブラリ
+- **Vite** - 高速ビルドツール
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### バックエンド・インフラ
+- **Cloudflare Pages** - 静的サイトホスティング
+- **Cloudflare Pages Functions** - サーバーレス関数
+- **Cloudflare KV** - NoSQLデータストレージ
+- **OpenStreetMap Japan** - 地図タイルソース
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### 開発ツール
+- **ESLint** - コード品質チェック
+- **CSS3** - スタイリング
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🚀 クイックスタート
+
+### 前提条件
+以下のソフトウェアがインストールされている必要があります：
+- **Node.js** (v18以上推奨)
+- **npm** (Node.jsに同梱)
+
+### 1. リポジトリのクローン
+```bash
+git clone https://github.com/yourusername/cafe_map.git
+cd cafe_map
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 2. 依存関係のインストール
+```bash
+npm install
 ```
+
+### 3. 開発サーバーの起動
+```bash
+npm run dev
+```
+
+ブラウザで `http://localhost:5173` にアクセスしてアプリケーションを確認できます。
+
+## 📁 プロジェクト構成
+
+```
+cafe_map/
+├── public/                          # 静的ファイル
+│   ├── icon.jpg                     # アプリアイコン
+│   └── vite.svg                     # Viteロゴ
+├── src/                             # ソースコード
+│   ├── components/                  # Reactコンポーネント
+│   │   ├── Information/             # カフェ詳細情報表示
+│   │   │   ├── Information.tsx
+│   │   │   └── Information.css
+│   │   ├── MapView/                 # 地図表示メインコンポーネント
+│   │   │   ├── MapView.tsx
+│   │   │   ├── MapView.css
+│   │   │   ├── CafeMarker.ts        # マーカー生成
+│   │   │   └── CafeMarker.css
+│   │   ├── Search/                  # 検索機能
+│   │   │   ├── Search.tsx
+│   │   │   └── Search.css
+│   │   ├── MixerPanel/              # 設定パネル
+│   │   │   ├── MixerPanel.tsx
+│   │   │   └── MixerPanel.css
+│   │   └── CafeList/                # カフェ一覧表示
+│   │       ├── CafeList.tsx
+│   │       └── CafeList.css
+│   ├── data/                        # 開発用データ
+│   │   └── instagram_posts_with_coords.json
+│   ├── lib/                         # ユーティリティ
+│   │   └── dataClient.ts            # データ取得ロジック
+│   ├── App.tsx                      # アプリケーションルート
+│   ├── App.css                      # グローバルスタイル
+│   ├── main.tsx                     # エントリーポイント
+│   └── index.css                    # ベーススタイル
+├── functions/                       # Cloudflare Pages Functions
+│   └── api/
+│       └── fetch_cafedata.ts        # KVからデータ取得API
+├── package.json                     # プロジェクト設定
+├── tsconfig.json                    # TypeScript設定
+├── vite.config.ts                   # Vite設定
+└── README.md                        # このファイル
+```
+
+## 🔧 開発ガイド
+
+### 利用可能なコマンド
+
+```bash
+# 開発サーバー起動（ホットリロード付き）
+npm run dev
+
+# プロダクションビルド
+npm run build
+
+# ビルドファイルをローカルでプレビュー
+npm run preview
+
+# コードの品質チェック
+npm run lint
+```
+
+### 環境の違い
+
+#### 開発環境 (`npm run dev`)
+- ローカルのJSONファイルからデータを取得
+- 高速な開発とデバッグが可能
+- ホットリロード機能
+
+#### プロダクション環境 (`npm run build`)
+- Cloudflare KVからAPIを通じてデータを取得
+- 最新のデータを動的に表示
+- 最適化されたビルド
+
+### データ構造
+
+カフェデータは以下の形式で管理されています：
+
+```typescript
+type CafeData = {
+  id: string                          // 一意識別子
+  store_name: string                  // 店舗名
+  address: string                     // 住所
+  lat: number                         // 緯度
+  lng: number                         // 経度
+  caption?: string                    // 投稿キャプション
+  media_url?: string                  // 画像URL
+  thumbnail_url?: string              // サムネイルURL（動画用）
+  permalink?: string                  // Instagram投稿URL
+  media_type?: "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM"
+  like_count?: number                 // いいね数
+  comments_count?: number             // コメント数
+  timestamp?: string                  // 投稿日時
+}
+```
+
+## 🌐 デプロイ
+
+### Cloudflare Pagesへのデプロイ
+
+1. **Cloudflare Pagesプロジェクトの作成**
+   - Cloudflare Dashboardにログイン
+   - Pages > Create a project を選択
+   - GitHubリポジトリを連携
+
+2. **ビルド設定**
+   ```
+   Build command: npm run build
+   Build output directory: dist
+   Node.js version: 18 (または最新)
+   ```
+
+3. **KVネームスペースの設定**
+   - Workers & Pages > KV
+   - 新しいネームスペースを作成（例：`cafe-map`）
+   - カフェデータをキー `cafe_data_kv.json` で保存
+
+4. **環境変数の設定**
+   - Pages プロジェクト > Settings > Environment variables
+   - KVネームスペースを `cafe-map` としてバインド
+
+### 手動デプロイ
+
+```bash
+# 1. ビルド
+npm run build
+
+# 2. distフォルダの内容をCloudflare Pagesにアップロード
+```
+
+## 🎨 カスタマイズ
+
+### 地図のスタイルを変更する
+
+`src/components/MapView/MapView.tsx` の以下の部分を編集：
+
+```typescript
+style: "https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json"
+```
+
+### ズーム閾値の調整
+
+```typescript
+const ZOOM_THRESHOLD = 14 // この値以下だとマーカーを表示しない
+```
+
+### マーカーサイズの変更
+
+`src/components/MapView/CafeMarker.css`：
+
+```css
+.cafe-marker {
+    width: 100px;  /* サイズを調整 */
+    height: 100px; /* サイズを調整 */
+}
+```
+
+### 初期地図位置の設定
+
+```typescript
+center: [130.5548586, 31.5901844], // [経度, 緯度]
+zoom: 17, // 初期ズームレベル
+```
+
+## 🐛 トラブルシューティング
+
+### よくある問題と解決方法
+
+#### Q: 地図が表示されない
+**A:** 以下を確認してください：
+1. インターネット接続
+2. ブラウザのJavaScript有効化
+3. コンソールエラーの確認（F12キー）
+
+#### Q: マーカーが表示されない
+**A:** 以下を確認してください：
+1. ズームレベルが14以上か確認
+2. データが正しく読み込まれているかコンソールで確認
+3. 地図の表示範囲にカフェがあるか確認
+
+#### Q: 開発環境でAPIエラーが出る
+**A:** 開発環境では自動的にローカルデータを使用するため、通常は問題ありません。エラーが継続する場合は `src/lib/dataClient.ts` の `isDevelopment` フラグを確認してください。
+
+#### Q: ビルドエラーが発生する
+**A:** 以下をお試しください：
+```bash
+# 依存関係の再インストール
+rm -rf node_modules package-lock.json
+npm install
+
+# キャッシュクリア
+npm run build -- --no-cache
+```
+
+## 📊 パフォーマンス最適化
+
+### 実装済みの最適化
+- **マーカーの動的表示**: ズームレベルによる表示制御
+- **表示範囲フィルタリング**: 画面内のマーカーのみ描画
+- **データキャッシュ**: メモリ内でのデータ保持
+- **遅延読み込み**: 画像の遅延読み込み
+- **コード分割**: 必要な部分のみロード
+
+### さらなる最適化のアイデア
+- PWA対応（オフライン機能）
+- 画像の WebP 形式対応
+- ServiceWorkerによるキャッシュ戦略
+- Virtual Scrolling for カフェリスト
+
+## 🤝 コントリビューション
+
+プロジェクトへの貢献を歓迎します！
+
+### 貢献方法
+
+1. **Issues**: バグ報告や機能要望
+2. **Pull Requests**: コードの改善提案
+3. **Documentation**: ドキュメントの改善
+
+### 開発フロー
+
+1. フォークを作成
+2. フィーチャーブランチを作成 (`git checkout -b feature/amazing-feature`)
+3. 変更をコミット (`git commit -m 'Add amazing feature'`)
+4. ブランチにプッシュ (`git push origin feature/amazing-feature`)
+5. Pull Requestを作成
+
+
+
