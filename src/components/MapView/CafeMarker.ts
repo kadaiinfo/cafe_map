@@ -12,7 +12,11 @@ export function CafeMarkerElement(mediaUrl: string | null | undefined, storeName
     // 画像URLが空の場合は最初からフォールバック表示
     if (!safeUrl.trim()) {
         el.classList.add("cafe-marker--fallback")
-        el.textContent = "📷"
+        const fallbackImg = document.createElement("img")
+        fallbackImg.src = "/icon.png"
+        fallbackImg.alt = "カフェ"
+        fallbackImg.className = "cafe-marker__fallback-img"
+        el.appendChild(fallbackImg)
         return el
     }
   
@@ -26,7 +30,11 @@ export function CafeMarkerElement(mediaUrl: string | null | undefined, storeName
       // 画像読み込み失敗時はアイコンだけ出す
       img.style.display = "none"
       el.classList.add("cafe-marker--fallback")
-      el.textContent = "📷"
+      const fallbackImg = document.createElement("img")
+      fallbackImg.src = "/icon.png"
+      fallbackImg.alt = "カフェ"
+      fallbackImg.className = "cafe-marker__fallback-img"
+      el.appendChild(fallbackImg)
     }
   
     el.appendChild(img)

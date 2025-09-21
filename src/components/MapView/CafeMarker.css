@@ -20,10 +20,15 @@
   /* フォールバック表示 */
 .cafe-marker--fallback{
     background: #ffffff;
-    color: #fff;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+}
+
+/* フォールバック画像 */
+.cafe-marker__fallback-img{
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
 }
   
