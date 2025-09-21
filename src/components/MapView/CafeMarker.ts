@@ -5,6 +5,7 @@ export function CafeMarkerElement(mediaUrl: string | null | undefined, storeName
     const safeUrl = mediaUrl ?? "" // null/undefinedなら空文字にする
     const safeName = storeName ?? "cafe"
     
+    console.log('Creating marker:', { mediaUrl, safeUrl, storeName }) // デバッグログ
     
     const el = document.createElement("div")
     el.className = "cafe-marker"
@@ -13,7 +14,7 @@ export function CafeMarkerElement(mediaUrl: string | null | undefined, storeName
     if (!safeUrl.trim()) {
         el.classList.add("cafe-marker--fallback")
         const fallbackImg = document.createElement("img")
-        fallbackImg.src = "/icon.png"
+        fallbackImg.src = "/icon.jpg"
         fallbackImg.alt = "カフェ"
         fallbackImg.className = "cafe-marker__fallback-img"
         el.appendChild(fallbackImg)
@@ -28,10 +29,11 @@ export function CafeMarkerElement(mediaUrl: string | null | undefined, storeName
   
     img.onerror = () => {
       // 画像読み込み失敗時はアイコンだけ出す
+      console.log('Image load failed for:', safeUrl) // デバッグログ
       img.style.display = "none"
       el.classList.add("cafe-marker--fallback")
       const fallbackImg = document.createElement("img")
-      fallbackImg.src = "/icon.png"
+      fallbackImg.src = "/icon.jpg"
       fallbackImg.alt = "カフェ"
       fallbackImg.className = "cafe-marker__fallback-img"
       el.appendChild(fallbackImg)
