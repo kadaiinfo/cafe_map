@@ -51,11 +51,7 @@ export default function Search({ onSearch, onSettingsClick, onLocationClick, isL
               aria-label="現在地を表示"
               title="現在地を表示"
             >
-              {isLocating ? (
-                '📍'
-              ) : (
-                <img src="/location.png" alt="現在地" className="location-icon" />
-              )}
+              <img src="/location.png" alt="現在地" className="location-icon" />
             </button>
           )}
         </div>
