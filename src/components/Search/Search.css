@@ -143,9 +143,6 @@
   transform: none;
 }
 
-.location-button-search.loading {
-  animation: spin 1s linear infinite;
-}
 
 .location-icon {
   width: 30px;

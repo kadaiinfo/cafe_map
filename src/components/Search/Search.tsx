@@ -47,7 +47,7 @@ export default function Search({ onSearch, onSettingsClick, onLocationClick, isL
               type="button" 
               onClick={onLocationClick}
               disabled={isLocating}
-              className={`location-button-search ${isLocating ? 'loading' : ''}`}
+              className="location-button-search"
               aria-label="現在地を表示"
               title="現在地を表示"
             >
