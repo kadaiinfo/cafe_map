@@ -17,6 +17,19 @@ const geolocationOptions: PositionOptions = {
 // 現在地を取得する関数
 export const getCurrentLocation = (): Promise<UserLocation> => {
   return new Promise((resolve, reject) => {
+    // 開発環境では固定座標を使用
+    const isDevelopment = import.meta.env.MODE === 'development'
+    
+    if (isDevelopment) {
+      // 開発用の固定座標（天文館付近）
+      resolve({
+        lng: 130.554993,
+        lat: 31.589989,
+        accuracy: 10
+      })
+      return
+    }
+
     if (!navigator.geolocation) {
       reject(new Error('このブラウザは位置情報に対応していません'))
       return

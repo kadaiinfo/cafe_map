@@ -7,6 +7,7 @@ import Information from "../Information/Information.tsx"
 import Search from "../Search/Search.tsx"
 import MixerPanel from "../MixerPanel/MixerPanel.tsx"
 import CafeList from "../CafeList/CafeList.tsx"
+import NearbyCafeList from "../NearbyCafeList/NearbyCafeList.tsx"
 
 // Utils imports
 import { saveMapState, loadMapState } from "./utils/mapState"
@@ -39,6 +40,7 @@ export default function MapView() {
     const ZOOM_THRESHOLD = 14 // この値以下だとマーカーを表示しない
     const [showMixerPanel, setShowMixerPanel] = useState(false) // MixerPanel表示状態
     const [showCafeList, setShowCafeList] = useState(false) // CafeList表示状態
+    const [showNearbyCafeList, setShowNearbyCafeList] = useState(false) // NearbyCafeList表示状態
     const [mapCenter, setMapCenter] = useState<[number, number] | null>(null) // 地図中心位置の状態
     const [isLocating, setIsLocating] = useState(false) // 位置情報取得中の状態
     const userLocationMarkerRef = useRef<maplibregl.Marker | null>(null) // 現在地マーカーの参照
@@ -93,6 +95,17 @@ export default function MapView() {
     // カフェ一覧を閉じる - CafeList の×ボタンクリック時
     const handleCloseCafeList = () => {
         setShowCafeList(false) // カフェ一覧を閉じる
+    }
+
+    // 近くのカフェ一覧を表示 - MixerPanel の「近くのお店を表示」ボタンクリック時
+    const handleShowNearbyCafeList = () => {
+        setShowMixerPanel(false)  // 設定パネルを閉じる
+        setShowNearbyCafeList(true)     // 近くのカフェ一覧を開く
+    }
+
+    // 近くのカフェ一覧を閉じる - NearbyCafeList の×ボタンクリック時
+    const handleCloseNearbyCafeList = () => {
+        setShowNearbyCafeList(false) // 近くのカフェ一覧を閉じる
     }
 
     // カフェ一覧からカフェを選択 - CafeList のアイテムクリック時
@@ -274,6 +287,7 @@ export default function MapView() {
                     onClose={handleCloseMixerPanel}
                     onShowCafeList={handleShowCafeList}
                     onAreaSelect={handleAreaSelect}
+                    onShowNearbyCafes={handleShowNearbyCafeList}
                 />
             )}
 
@@ -282,6 +296,14 @@ export default function MapView() {
                 <CafeList 
                     onCafeSelect={handleCafeSelect}
                     onClose={handleCloseCafeList}
+                />
+            )}
+
+            {/* 近くの店舗リストの表示 */}
+            {showNearbyCafeList && (
+                <NearbyCafeList 
+                    onCafeSelect={handleCafeSelect}
+                    onClose={handleCloseNearbyCafeList}
                 />
             )}
 

@@ -5,9 +5,10 @@ interface MixerPanelProps {
   onClose: () => void
   onShowCafeList: () => void
   onAreaSelect: (lng: number, lat: number) => void
+  onShowNearbyCafes: () => void
 }
 
-export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect }: MixerPanelProps) {
+export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onShowNearbyCafes }: MixerPanelProps) {
   const [selectedArea, setSelectedArea] = useState<string>("")
 
   const areas = [
@@ -50,10 +51,19 @@ export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect }: Mi
               className="mixer-panel__option-button"
               onClick={onShowCafeList}
             >
-              <span className="mixer-panel__option-icon">📋</span>
               <div className="mixer-panel__option-content">
                 <div className="mixer-panel__option-title">リスト表示</div>
-                <div className="mixer-panel__option-desc">カフェを一覧で表示</div>
+                <div className="mixer-panel__option-desc">ご飯やさんを一覧で表示</div>
+              </div>
+            </button>
+            
+            <button 
+              className="mixer-panel__option-button"
+              onClick={onShowNearbyCafes}
+            >
+              <div className="mixer-panel__option-content">
+                <div className="mixer-panel__option-title">近くのお店を表示</div>
+                <div className="mixer-panel__option-desc">500m内のご飯やさんを表示</div>
               </div>
             </button>
           </div>

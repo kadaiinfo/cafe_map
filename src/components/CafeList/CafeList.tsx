@@ -87,9 +87,6 @@ export default function CafeList({ onCafeSelect, onClose }: CafeListProps) {
                   {cafe.address || "—"}
                 </p>
               </div>
-              <div className="cafe-list__item-arrow">
-                →
-              </div>
             </div>
           ))}
         </div>
