@@ -27,18 +27,18 @@ export default function MapView() {
 
     const mapContainerRef = useRef(null)
     const mapRef = useRef<maplibregl.Map | null>(null)
-    const [allCafes, setAllCafes] = useState<Cafe[]>([]) // 全店舗情報
+    const [allCafes, setAllCafes] = useState<Cafe[]>([]) // 全店舗情報を保存する状態
     const [cafeDataLoaded, setCafeDataLoaded] = useState(false) // カフェデータの読み込み状態
-    const [selected, setSelected] = useState<Cafe | null>(null)
+    const [selected, setSelected] = useState<Cafe | null>(null) // 選択された店舗の状態
     const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map()) // マーカーの参照をMapで管理
     const currentPopupRef = useRef<maplibregl.Popup | null>(null) // 現在表示中のポップアップの参照
     const [mapLoaded, setMapLoaded] = useState(false) // マップの読み込み状態
     const DEFAULT_ZOOM_LEVEL = 17 // デフォルトのズームレベル
-    const [currentZoom, setCurrentZoom] = useState(DEFAULT_ZOOM_LEVEL) // 現在のズームレベル
+    const [currentZoom, setCurrentZoom] = useState(DEFAULT_ZOOM_LEVEL) // 現在のズームレベルの状態
     const ZOOM_THRESHOLD = 14 // この値以下だとマーカーを表示しない
     const [showMixerPanel, setShowMixerPanel] = useState(false) // MixerPanel表示状態
     const [showCafeList, setShowCafeList] = useState(false) // CafeList表示状態
-    const [mapCenter, setMapCenter] = useState<[number, number] | null>(null) // 地図中心位置
+    const [mapCenter, setMapCenter] = useState<[number, number] | null>(null) // 地図中心位置の状態
 
     // カフェデータを読み込む（コンポーネント初回マウント時のみ）
     useEffect(() => {
@@ -68,7 +68,7 @@ export default function MapView() {
             markersRef,
             setSelected
         )
-    }, [currentZoom, cafeDataLoaded, allCafes, ZOOM_THRESHOLD])
+    }, [currentZoom, cafeDataLoaded, allCafes])
 
     // -------- 設定（MixerPanel）の処理------------
     // 設定（MixerPanel）を開く - 検索バーの設定ボタンクリック時
@@ -212,7 +212,9 @@ export default function MapView() {
     // ref={mapContainerRef}で、以下のdiv要素をmapContainerRef.currentに入れる
     return (
         <div className="map-layout">
+            {/* 検索欄の表示 */}
             <Search onSearch={handleSearchAction} onSettingsClick={handleSettingsClick} />
+
             <div ref={mapContainerRef} className="map-container" />
 
             {/* カフェデータの読み込み中の表示 */}
@@ -231,14 +233,11 @@ export default function MapView() {
                 </div>
             )}
 
-            {/* 表示範囲が広すぎる時の表示 */}
-            {currentZoom <= ZOOM_THRESHOLD && (
-                <div className="zoom-warning">
-                    <p>表示範囲が広すぎます。ズームしてください 🔍</p>
-                </div>
-            )}
 
+            {/* InformationUIの表示 */}
             {selected && <Information cafe={selected} onClose={() => setSelected(null)} />}
+
+            {/* 設定パネルの表示 */}
             {showMixerPanel && (
                 <MixerPanel 
                     onClose={handleCloseMixerPanel}
@@ -246,6 +245,8 @@ export default function MapView() {
                     onAreaSelect={handleAreaSelect}
                 />
             )}
+
+            {/* 店舗リストの表示 */}
             {showCafeList && (
                 <CafeList 
                     onCafeSelect={handleCafeSelect}

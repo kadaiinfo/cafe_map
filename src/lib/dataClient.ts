@@ -1,6 +1,6 @@
 import cafe_data from "../data/cafe_data_kv.json"
 
-// APIからデータを取得する型定義
+// APIから取得するデータの型定義
 type CafeDataFromAPI = {
     id: string
     store_name?: string | null
@@ -18,7 +18,7 @@ type CafeDataFromAPI = {
     timestamp?: string
 }
 
-// 軽量データ構造（地図表示用）
+// 軽量データ構造（地図表示用に最小限のフィールドのみの型を定義）
 export type Cafe = {
     id: string
     lat: number
@@ -28,7 +28,7 @@ export type Cafe = {
     media_url: string | null  // サムネイル用
 }
 
-// 詳細データ構造（情報パネル用）
+// 詳細データ構造（Informationパネル用の型を定義）
 export type DetailedCafe = {
     id: string
     store_name?: string | null
@@ -66,7 +66,7 @@ const fetchCafeDataFromAPI = async (): Promise<CafeDataFromAPI[]> => {
         return apiDataCache
     }
     
-    // プロダクション環境ではAPIから取得
+    // 本番環境ではAPI(Cloudflare KV)から取得
     try {
         const response = await fetch('/api/fetch_cafedata')
         if (!response.ok) {

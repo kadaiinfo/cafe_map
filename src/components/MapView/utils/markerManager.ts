@@ -3,6 +3,7 @@ import type { Cafe } from "../../../lib/dataClient"
 import { CafeMarkerElement } from "../CafeMarker"
 import { getVisibleCafes } from "./visibleCafes"
 import { handleCafeSelection } from "./mapPosition"
+import { updateClusterMarkers } from "./clusterManager"
 
 // マーカーを更新する関数（ズーム値を指定）
 export const updateMarkersWithZoom = (
@@ -21,18 +22,30 @@ export const updateMarkersWithZoom = (
     return
   }
 
-  // ズームレベルが閾値以下の場合はマーカーをすべて削除
+  // ズームレベルが閾値以下の場合はクラスターマーカーを表示
   if (zoom <= ZOOM_THRESHOLD) {
-    console.log('Zoom below threshold, removing all markers')
+    // 既存の店舗マーカーをすべて削除
     const currentMarkers = markersRef.current
     currentMarkers.forEach((marker) => {
       marker.remove()
     })
     currentMarkers.clear()
+    
+    updateClusterMarkers(zoom, map, cafeDataLoaded, allCafes, ZOOM_THRESHOLD, markersRef, setSelected)
     return
   }
 
-  // 閾値以上の場合は通常のマーカー更新処理
+  // 閾値以上の場合はクラスターマーカーを削除して通常のマーカー更新処理
+  if (map?.getLayer('clusters')) {
+    map.removeLayer('clusters')
+  }
+  if (map?.getLayer('cluster-labels')) {
+    map.removeLayer('cluster-labels')
+  }
+  if (map?.getSource('clusters')) {
+    map.removeSource('clusters')
+  }
+
   const visibleCafes = getVisibleCafes(map, allCafes, cafeDataLoaded)
   console.log('Visible cafes found:', visibleCafes.length)
   const currentMarkers = markersRef.current

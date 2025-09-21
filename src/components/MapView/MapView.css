@@ -1,84 +1,134 @@
+/* ========================================
+   MapView コンポーネント全体のレイアウト
+   ======================================== */
+
+/* メインレイアウトコンテナ - 地図とUI要素の基底 */
 .map-layout {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
+  position: relative;     /* 子要素の絶対配置の基準点 */
+  width: 100vw;          /* ビューポート幅いっぱい */
+  height: 100vh;         /* ビューポート高さいっぱい */
 }
 
+/* 地図本体のコンテナ - MapLibre GLが描画される領域 */
 .map-container {
-  width: 100vw;
-  height: 100vh;
+  width: 100vw;          /* ビューポート幅いっぱい */
+  height: 100vh;         /* ビューポート高さいっぱい */
 }
 
-.cafe-popup {
-  font-family: "Noto Sans JP", sans-serif;
-  font-size: 14px;
-  color: #000;
-  padding: 8px 12px;
-}
+/* ========================================
+   ポップアップ（マーカークリック時の吹き出し）
+   ======================================== */
 
+/* MapLibre GLデフォルトのポップアップ内容をカスタマイズ */
 .maplibregl-popup-content {
-  background: white;
-  border: 1.5px solid black !important;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: white;                           /* 背景色：白 */
+  border: 1.5px solid black !important;      /* 枠線：黒、太さ1.5px */
+  border-radius: 4px;                         /* 角丸：4px */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 影：下方向に薄いグレー */
 }
 
+/* カスタムポップアップ（.custom-popup クラス）のスタイル */
 .custom-popup .maplibregl-popup-content {
-  background: white !important;
-  border: none !important;
-  border-radius: 6px !important;
-  box-shadow: none !important;
-  padding: 8px 12px !important;
-  font-family: "Noto Sans JP", sans-serif !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
-  color: #333 !important;
-  z-index: 9999 !important;
+  background: white !important;                        /* 背景色：白（強制適用） */
+  border: none !important;                            /* 枠線：なし */
+  border-radius: 6px !important;                     /* 角丸：6px */
+  box-shadow: none !important;                       /* 影：なし */
+  padding: 8px 12px !important;                      /* 内側余白：上下8px、左右12px */
+  font-family: "Noto Sans JP", sans-serif !important; /* フォント：日本語対応 */
+  font-size: 14px !important;                        /* 文字サイズ：14px */
+  font-weight: 600 !important;                       /* 文字太さ：やや太め */
+  color: #333 !important;                            /* 文字色：ダークグレー */
+  z-index: 9999 !important;                          /* 重ね順：最前面 */
 }
 
+/* カスタムポップアップの三角形（吹き出しの矢印部分） */
 .custom-popup .maplibregl-popup-tip {
-  border-top-color: white !important;
+  border-top-color: white !important;               /* 三角形の色：白 */
 }
 
+/* ========================================
+   ズーム警告（ズームレベルが低すぎる時の警告表示）
+   ======================================== */
+
+/* ズーム警告のメインコンテナ */
 .zoom-warning {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(255, 255, 255, 0.95);
-  border: 2px solid #ff6b6b;
-  border-radius: 8px;
-  padding: 20px;
-  text-align: center;
-  z-index: 1000;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  position: absolute;                              /* 絶対配置 */
+  top: 50%;                                       /* 画面縦中央 */
+  left: 50%;                                      /* 画面横中央 */
+  transform: translate(-50%, -50%);               /* 要素自体の中央を基準点に調整 */
+  background: rgba(255, 255, 255, 0.95);         /* 背景色：半透明の白（透明度95%） */
+  border: 2px solid #ff6b6b;                     /* 枠線：赤色、太さ2px */
+  border-radius: 8px;                            /* 角丸：8px */
+  padding: 20px;                                 /* 内側余白：20px */
+  text-align: center;                            /* 文字配置：中央揃え */
+  z-index: 1000;                                 /* 重ね順：地図より上 */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);   /* 影：下方向に薄いグレー */
 }
 
+/* ズーム警告のメインテキスト */
 .zoom-warning p {
-  margin: 0 0 8px 0;
-  color: #d63031;
-  font-weight: 600;
-  font-size: 16px;
+  margin: 0 0 8px 0;     /* マージン：下のみ8px */
+  color: #d63031;        /* 文字色：赤 */
+  font-weight: 600;      /* 文字太さ：やや太め */
+  font-size: 16px;       /* 文字サイズ：16px */
 }
 
+/* ズーム警告のサブテキスト（現在は使用されていない可能性） */
 .zoom-warning small {
-  color: #636e72;
-  font-size: 14px;
+  color: #636e72;        /* 文字色：グレー */
+  font-size: 14px;       /* 文字サイズ：14px */
 }
+
+/* ========================================
+   クラスターマーカー（ズームアウト時のグループ表示）
+   ======================================== */
+
+/* クラスターマーカーの基本スタイル */
+.cluster-marker {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  border: 3px solid white !important;
+  color: white !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  transition: transform 0.2s ease !important;
+  font-family: "Noto Sans JP", sans-serif !important;
+}
+
+/* クラスターマーカーのホバー効果 */
+.cluster-marker:hover {
+  transform: scale(1.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* クラスターマーカー（茶色で統一） */
+.cluster-marker {
+  background-color: #70513C !important;
+}
+
+/* ========================================
+   レスポンシブ対応（768px以下の画面）
+   ======================================== */
 
 @media (max-width: 768px) {
+  /* モバイル版ズーム警告 - 横幅を画面いっぱいに調整 */
   .zoom-warning {
-    left: 20px;
-    right: 20px;
-    transform: translateY(-50%);
-    padding: 16px;
+    left: 20px;                    /* 左端から20px */
+    right: 20px;                   /* 右端から20px */
+    transform: translateY(-50%);   /* 縦中央のみ調整（横は left/right で制御） */
+    padding: 16px;                 /* 内側余白：16px（デスクトップより小さく） */
   }
   
+  /* モバイル版メインテキスト - 文字サイズを小さく */
   .zoom-warning p {
-    font-size: 14px;
+    font-size: 14px;              /* 文字サイズ：14px（デスクトップより小さく） */
   }
   
+  /* モバイル版サブテキスト - 文字サイズを小さく */
   .zoom-warning small {
-    font-size: 12px;
+    font-size: 12px;              /* 文字サイズ：12px（デスクトップより小さく） */
   }
 }

@@ -12,7 +12,6 @@ export const onRequestGet: PagesFunction<{ "cafe-map": KVNamespace }> = async (c
       return new Response(text, {
         headers: {
           "content-type": "application/json; charset=utf-8",
-          // キャッシュはお好みで調整
           "cache-control": "max-age=60, stale-while-revalidate=30",
         },
       })
