@@ -95,7 +95,7 @@ export default function NearbyCafeList({ onCafeSelect, onClose }: NearbyCafeList
   return (
     <div className="nearby-cafe-list">
       <div className="nearby-cafe-list__header">
-        <h2 className="nearby-cafe-list__title">近くのご飯やさん</h2>
+        <h2 className="nearby-cafe-list__title">近くのご飯屋さん</h2>
         <button 
           className="nearby-cafe-list__close" 
           onClick={onClose}
@@ -121,12 +121,12 @@ export default function NearbyCafeList({ onCafeSelect, onClose }: NearbyCafeList
         {!loading && !error && (
           <>
             <div className="nearby-cafe-list__count">
-              500m内に {nearbyCafes.length}件のご飯やさん
+              500m内に {nearbyCafes.length}件のご飯屋さん
             </div>
             
             {nearbyCafes.length === 0 ? (
               <div className="nearby-cafe-list__empty">
-                近くにご飯やさんが見つかりませんでした
+                近くにご飯屋さんが見つかりませんでした
               </div>
             ) : (
               <div className="nearby-cafe-list__items">

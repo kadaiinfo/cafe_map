@@ -53,7 +53,7 @@ export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onSh
             >
               <div className="mixer-panel__option-content">
                 <div className="mixer-panel__option-title">リスト表示</div>
-                <div className="mixer-panel__option-desc">ご飯やさんを一覧で表示</div>
+                <div className="mixer-panel__option-desc">ご飯屋さんを一覧で表示</div>
               </div>
             </button>
             
@@ -63,7 +63,7 @@ export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onSh
             >
               <div className="mixer-panel__option-content">
                 <div className="mixer-panel__option-title">近くのお店を表示</div>
-                <div className="mixer-panel__option-desc">500m内のご飯やさんを表示</div>
+                <div className="mixer-panel__option-desc">500m内のご飯屋さんを表示</div>
               </div>
             </button>
           </div>
