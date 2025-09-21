@@ -14,6 +14,7 @@ import { showPopup, hidePopup } from "./utils/popupManager"
 import { handleCafeSelection } from "./utils/mapPosition"
 import { updateMarkersWithZoom } from "./utils/markerManager"
 import { handleSearch } from "./utils/searchHandler"
+import { getCurrentLocation, updateUserLocationMarker, moveToUserLocation } from "./utils/geolocation"
 
 // 地図を描画するコンポーネント
 // この記事を参考に実装した 
@@ -39,6 +40,8 @@ export default function MapView() {
     const [showMixerPanel, setShowMixerPanel] = useState(false) // MixerPanel表示状態
     const [showCafeList, setShowCafeList] = useState(false) // CafeList表示状態
     const [mapCenter, setMapCenter] = useState<[number, number] | null>(null) // 地図中心位置の状態
+    const [isLocating, setIsLocating] = useState(false) // 位置情報取得中の状態
+    const userLocationMarkerRef = useRef<maplibregl.Marker | null>(null) // 現在地マーカーの参照
 
     // カフェデータを読み込む（コンポーネント初回マウント時のみ）
     useEffect(() => {
@@ -102,7 +105,8 @@ export default function MapView() {
         if (mapRef.current) {
             mapRef.current.flyTo({
                 center: [lng, lat],
-                zoom: DEFAULT_ZOOM_LEVEL  // デフォルトズームで指定座標に移動
+                zoom: DEFAULT_ZOOM_LEVEL,  // デフォルトズームで指定座標に移動
+                duration: 3000
             })
         }
     }
@@ -119,6 +123,28 @@ export default function MapView() {
             setSelected,
             updateMarkers
         )
+    }
+
+    // -------現在地の処理-----------
+    // 現在地を取得して地図に表示
+    const handleLocationClick = async () => {
+        if (isLocating) return // 既に取得中の場合は何もしない
+
+        setIsLocating(true)
+        try {
+            const location = await getCurrentLocation()
+            
+            // 現在地マーカーを更新
+            updateUserLocationMarker(mapRef.current, location, userLocationMarkerRef)
+            
+            // 地図を現在地に移動
+            moveToUserLocation(mapRef.current, location, DEFAULT_ZOOM_LEVEL)
+        } catch (error) {
+            console.error('位置情報の取得に失敗:', error)
+            alert(error instanceof Error ? error.message : '位置情報の取得に失敗しました')
+        } finally {
+            setIsLocating(false)
+        }
     }
 
     // 地図を初期化・イベントリスナー設定（コンポーネント初回マウント時のみ）
@@ -213,7 +239,12 @@ export default function MapView() {
     return (
         <div className="map-layout">
             {/* 検索欄の表示 */}
-            <Search onSearch={handleSearchAction} onSettingsClick={handleSettingsClick} />
+            <Search 
+                onSearch={handleSearchAction} 
+                onSettingsClick={handleSettingsClick}
+                onLocationClick={handleLocationClick}
+                isLocating={isLocating}
+            />
 
             <div ref={mapContainerRef} className="map-container" />
 
@@ -253,6 +284,7 @@ export default function MapView() {
                     onClose={handleCloseCafeList}
                 />
             )}
+
         </div>
     )
 }

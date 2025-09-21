@@ -6,9 +6,11 @@ import mixerIcon from "./mixer.svg"
 interface SearchProps {
   onSearch: (query: string) => void
   onSettingsClick?: () => void
+  onLocationClick?: () => void
+  isLocating?: boolean
 }
 
-export default function Search({ onSearch, onSettingsClick }: SearchProps) {
+export default function Search({ onSearch, onSettingsClick, onLocationClick, isLocating }: SearchProps) {
   const [query, setQuery] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -29,16 +31,34 @@ export default function Search({ onSearch, onSettingsClick }: SearchProps) {
             className="search-input"
           />
         </div>
-        {onSettingsClick && (
-          <button 
-            type="button" 
-            onClick={onSettingsClick}
-            className="settings-button"
-            aria-label="設定"
-          >
-            <img src={mixerIcon} alt="設定" className="settings-icon" />
-          </button>
-        )}
+        <div className="search-buttons">
+          {onSettingsClick && (
+            <button 
+              type="button" 
+              onClick={onSettingsClick}
+              className="settings-button"
+              aria-label="設定"
+            >
+              <img src={mixerIcon} alt="設定" className="settings-icon" />
+            </button>
+          )}
+          {onLocationClick && (
+            <button 
+              type="button" 
+              onClick={onLocationClick}
+              disabled={isLocating}
+              className={`location-button-search ${isLocating ? 'loading' : ''}`}
+              aria-label="現在地を表示"
+              title="現在地を表示"
+            >
+              {isLocating ? (
+                '📍'
+              ) : (
+                <img src="/location.png" alt="現在地" className="location-icon" />
+              )}
+            </button>
+          )}
+        </div>
       </form>
     </div>
   )
