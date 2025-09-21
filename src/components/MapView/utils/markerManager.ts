@@ -31,7 +31,7 @@ export const updateMarkersWithZoom = (
     })
     currentMarkers.clear()
     
-    updateClusterMarkers(zoom, map, cafeDataLoaded, allCafes, ZOOM_THRESHOLD, markersRef, setSelected)
+    updateClusterMarkers(zoom, map, cafeDataLoaded, allCafes, ZOOM_THRESHOLD, setSelected)
     return
   }
 

@@ -95,7 +95,6 @@ export const updateClusterMarkers = (
   cafeDataLoaded: boolean,
   allCafes: Cafe[],
   ZOOM_THRESHOLD: number,
-  markersRef: React.MutableRefObject<Map<string, maplibregl.Marker>>,
   setSelected: (cafe: Cafe) => void
 ) => {
   console.log('updateClusterMarkers called:', { zoom, ZOOM_THRESHOLD, cafeDataLoaded, allCafesLength: allCafes.length })
