@@ -1,6 +1,6 @@
 import { useState } from "react"
 import "./Search.css"
-import iconImage from "./icon.jpg"
+// import iconImage from "./icon.jpg"
 import mixerIcon from "./mixer.svg"
 
 interface SearchProps {
@@ -22,7 +22,7 @@ export default function Search({ onSearch, onSettingsClick, onLocationClick, isL
     <div className="search-container">
       <form onSubmit={handleSubmit} className="search-form">
         <div className="search-input-container">
-          <img src={iconImage} alt="検索アイコン" className="search-icon" />
+          {/* <img src={iconImage} alt="検索アイコン" className="search-icon" /> */}
           <input
             type="text"
             value={query}
@@ -33,8 +33,8 @@ export default function Search({ onSearch, onSettingsClick, onLocationClick, isL
         </div>
         <div className="search-buttons">
           {onSettingsClick && (
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={onSettingsClick}
               className="settings-button"
               aria-label="設定"
@@ -43,8 +43,8 @@ export default function Search({ onSearch, onSettingsClick, onLocationClick, isL
             </button>
           )}
           {onLocationClick && (
-            <button 
-              type="button" 
+            <button
+              type="button"
               onClick={onLocationClick}
               disabled={isLocating}
               className="location-button-search"

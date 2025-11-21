@@ -1,6 +1,12 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      target: builder
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    command: npm run dev -- --host
     ports:
-      - "8080:80"
+      - "8080:5173"
     restart: always

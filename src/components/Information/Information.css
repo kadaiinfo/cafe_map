@@ -5,7 +5,7 @@
   width: 500px;
   max-height: calc(100vh - 40px);
   background: white;
-  border: 1.5px solid black; 
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   border-radius: 8px;
   overflow-y: auto;
   padding: 0;
@@ -44,18 +44,16 @@
     align-items: center;
     justify-content: space-between;
     background: white;
-    border: 1.5px solid black;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.08);
     border-radius: 12px 12px 0 0;
-    border-bottom: none;
     padding: 16px 20px;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     margin: 0 10px 0 10px;
     margin-bottom: 0;
     transition: all 0.2s ease;
     transform: translateY(0);
   }
-  
+
   .info__preview:active {
     background: #f8f9fa;
     transform: translateY(-2px);
@@ -95,7 +93,8 @@
 
 /* 詳細表示部分（全画面展開） */
 .info__detail {
-  display: block; /* デスクトップでは常に表示 */
+  display: block;
+  /* デスクトップでは常に表示 */
 }
 
 /* デスクトップではプレビューを非表示 */
@@ -103,7 +102,7 @@
   .info__preview {
     display: none !important;
   }
-  
+
   .info__detail {
     display: block !important;
   }
@@ -113,7 +112,7 @@
   .info__detail {
     display: none;
   }
-  
+
   .info--expanded .info__detail {
     display: block;
     position: fixed;
@@ -122,23 +121,22 @@
     right: 10px;
     bottom: 20px;
     background: white;
-    border: 1.5px solid black;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     border-radius: 16px;
     z-index: 3000;
     overflow-y: auto;
     padding: 0;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     animation: slideInFromBottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
-  
+
   .info--expanded .info__preview {
     display: none;
   }
-  
+
   .info--collapsed .info__detail {
     display: none;
   }
-  
+
   .info--collapsed .info__preview {
     display: flex;
     animation: fadeInUp 0.2s ease-out;
@@ -152,6 +150,7 @@
     opacity: 0;
     scale: 0.9;
   }
+
   100% {
     transform: translateY(0);
     opacity: 1;
@@ -165,6 +164,7 @@
     opacity: 1;
     scale: 1;
   }
+
   100% {
     transform: translateY(calc(100vh - 40px));
     opacity: 0;
@@ -177,6 +177,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -193,18 +194,17 @@
     right: 10px !important;
     bottom: 20px !important;
     background: white !important;
-    border: 1.5px solid black !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
     border-radius: 16px !important;
     z-index: 3000 !important;
     overflow-y: auto !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
     animation: slideOutToBottom 0.35s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
   }
-  
+
   .info--closing .info__preview {
     display: none !important;
   }
-  
+
   /* アニメーション中はプレビューを非表示 */
   .info--closing {
     pointer-events: none;
@@ -287,14 +287,14 @@
   margin: 0 0 16px 0;
 }
 
-.info__list > div {
+.info__list>div {
   display: flex;
   padding: 8px 0;
   border-bottom: 1.5px solid #f0f0f0;
 }
 
 @media (max-width: 768px) {
-  .info__list > div {
+  .info__list>div {
     flex-direction: column;
     gap: 4px;
     padding: 12px 0;
@@ -344,7 +344,7 @@
   color: black;
   padding: 10px 16px;
   text-decoration: none;
-  border: 1.5px solid black; 
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   border-radius: 6px;
   font-weight: 500;
   margin-top: 16px;
@@ -379,18 +379,16 @@
     align-items: center;
     justify-content: space-between;
     background: white;
-    border: 1.5px solid black;
+    box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.08);
     border-radius: 12px 12px 0 0;
-    border-bottom: none;
     padding: 16px 20px;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     margin: 0 10px 0 10px;
     margin-bottom: 0;
     transition: all 0.2s ease;
     transform: translateY(0);
   }
-  
+
   .info__preview:active {
     background: #f8f9fa;
     transform: translateY(-2px);
@@ -430,7 +428,8 @@
 
 /* 詳細表示部分（全画面展開） */
 .info__detail {
-  display: block; /* デスクトップでは常に表示 */
+  display: block;
+  /* デスクトップでは常に表示 */
 }
 
 /* デスクトップではプレビューを非表示 */
@@ -438,7 +437,7 @@
   .info__preview {
     display: none !important;
   }
-  
+
   .info__detail {
     display: block !important;
   }
@@ -448,7 +447,7 @@
   .info__detail {
     display: none;
   }
-  
+
   .info--expanded .info__detail {
     display: block;
     position: fixed;
@@ -457,23 +456,22 @@
     right: 10px;
     bottom: 20px;
     background: white;
-    border: 1.5px solid black;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     border-radius: 16px;
     z-index: 3000;
     overflow-y: auto;
     padding: 0;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     animation: slideInFromBottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
-  
+
   .info--expanded .info__preview {
     display: none;
   }
-  
+
   .info--collapsed .info__detail {
     display: none;
   }
-  
+
   .info--collapsed .info__preview {
     display: flex;
     animation: fadeInUp 0.2s ease-out;
@@ -487,6 +485,7 @@
     opacity: 0;
     scale: 0.9;
   }
+
   100% {
     transform: translateY(0);
     opacity: 1;
@@ -500,6 +499,7 @@
     opacity: 1;
     scale: 1;
   }
+
   100% {
     transform: translateY(calc(100vh - 40px));
     opacity: 0;
@@ -512,6 +512,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -528,18 +529,17 @@
     right: 10px !important;
     bottom: 20px !important;
     background: white !important;
-    border: 1.5px solid black !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
     border-radius: 16px !important;
     z-index: 3000 !important;
     overflow-y: auto !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
     animation: slideOutToBottom 0.35s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards;
   }
-  
+
   .info--closing .info__preview {
     display: none !important;
   }
-  
+
   /* アニメーション中はプレビューを非表示 */
   .info--closing {
     pointer-events: none;
