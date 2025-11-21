@@ -58,14 +58,14 @@ const fetchCafeDataFromAPI = async (): Promise<CafeDataFromAPI[]> => {
     if (apiDataCache) {
         return apiDataCache
     }
-    
+
     // 開発環境ではローカルデータを使用
     if (isDevelopment) {
         console.log('Using local data in development mode')
         apiDataCache = cafe_data as CafeDataFromAPI[]
         return apiDataCache
     }
-    
+
     // 本番環境ではAPI(Cloudflare KV)から取得
     try {
         const response = await fetch('/api/fetch_cafedata')
@@ -101,7 +101,7 @@ export const getCafeData = async (): Promise<Cafe[]> => {
     if (cafeDataCache) {
         return cafeDataCache
     }
-    
+
     const apiData = await fetchCafeDataFromAPI()
     cafeDataCache = generateCafeData(apiData)
     return cafeDataCache
@@ -117,11 +117,11 @@ export const getCafeDetail = async (id: string): Promise<DetailedCafe | null> =>
 // 検索機能
 export const searchCafes = async (query: string): Promise<Cafe[]> => {
     const cafeData = await getCafeData()
-    
+
     if (!query.trim()) {
         return cafeData
     }
-    
+
     const searchTerm = query.toLowerCase()
     return cafeData.filter(cafe => {
         const storeName = cafe.store_name ? cafe.store_name.toLowerCase() : ''
@@ -129,4 +129,5 @@ export const searchCafes = async (query: string): Promise<Cafe[]> => {
         return storeName.includes(searchTerm) || address.includes(searchTerm)
     })
 }
+
 

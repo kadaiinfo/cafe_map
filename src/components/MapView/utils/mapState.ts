@@ -13,8 +13,8 @@ export const loadMapState = () => {
     const saved = localStorage.getItem('cafeMapState')
     if (saved) {
       const mapState = JSON.parse(saved)
-      // 24時間以内の保存データのみ有効
-      if (Date.now() - mapState.timestamp < 24 * 60 * 60 * 1000) {
+      // 30日以内の保存データのみ有効
+      if (Date.now() - mapState.timestamp < 30 * 24 * 60 * 60 * 1000) {
         return mapState
       }
     }

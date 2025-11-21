@@ -23,8 +23,8 @@ export const getCurrentLocation = (): Promise<UserLocation> => {
     if (isDevelopment) {
       // 開発用の固定座標（天文館付近）
       resolve({
-        lng: 130.554993,
-        lat: 31.589989,
+        lng: 130.554992,
+        lat: 31.590813,
         accuracy: 10
       })
       return
