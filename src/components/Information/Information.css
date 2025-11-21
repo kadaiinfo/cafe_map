@@ -8,7 +8,6 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   border-radius: 8px;
   overflow-y: auto;
-  overscroll-behavior-y: contain;
   padding: 0;
   z-index: 1000;
   font-family: "Noto Sans JP", sans-serif;

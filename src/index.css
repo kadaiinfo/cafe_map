@@ -29,8 +29,6 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
-  overscroll-behavior-y: contain;
-  touch-action: pan-x pan-y pinch-zoom;
 }
 
 h1 {
