@@ -1,23 +1,24 @@
-/* ========================================
-   MapView コンポーネント全体のレイアウト
-   ======================================== */
-
-/* メインレイアウトコンテナ - 地図とUI要素の基底 */
-.map-layout {
-  position: relative;
-  /* 子要素の絶対配置の基準点 */
-  width: 100vw;
-  /* ビューポート幅いっぱい */
-  height: 100vh;
-  /* ビューポート高さいっぱい */
+/* Ensure full-screen map on mobile browsers */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-/* 地図本体のコンテナ - MapLibre GLが描画される領域 */
+.map-layout {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100%;
+}
+
 .map-container {
   width: 100vw;
-  /* ビューポート幅いっぱい */
-  height: 100vh;
-  /* ビューポート高さいっぱい */
+  height: 100%;
 }
 
 /* MapLibreのロゴとアトリビューションを非表示 */
