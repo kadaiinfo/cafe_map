@@ -257,6 +257,8 @@ export default function MapView() {
                 onSettingsClick={handleSettingsClick}
                 onLocationClick={handleLocationClick}
                 isLocating={isLocating}
+                cafes={allCafes}
+                onSuggestionSelect={handleCafeSelect}
             />
 
             <div ref={mapContainerRef} className="map-container" />

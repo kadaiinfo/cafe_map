@@ -1,4 +1,6 @@
 import cafe_data from "../data/cafe_data_kv.json"
+import { normalizeText } from "../utils/textNormalization"
+import { hiraganaToRomaji } from "../utils/romajiUtils"
 
 // APIから取得するデータの型定義
 type CafeDataFromAPI = {
@@ -125,12 +127,14 @@ export const searchCafes = async (query: string): Promise<Cafe[]> => {
         return cafeData
     }
 
-    const searchTerm = query.toLowerCase()
+    const normalizedQuery = normalizeText(query)
+    const romajiQuery = hiraganaToRomaji(normalizedQuery)
+
     return cafeData.filter(cafe => {
-        const storeName = cafe.store_name ? cafe.store_name.toLowerCase() : ''
-        const address = cafe.address ? cafe.address.toLowerCase() : ''
-        return storeName.includes(searchTerm) || address.includes(searchTerm)
+        const normalizedStoreName = normalizeText(cafe.store_name || "")
+        const normalizedAddress = normalizeText(cafe.address || "")
+        return normalizedStoreName.includes(normalizedQuery) ||
+            normalizedAddress.includes(normalizedQuery) ||
+            normalizedStoreName.toLowerCase().includes(romajiQuery) // ローマ字検索対応
     })
 }
-
-
