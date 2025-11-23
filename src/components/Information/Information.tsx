@@ -25,6 +25,8 @@ export default function Information({ cafe, onClose }: InformationProps) {
     const [isClosing, setIsClosing] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
     const [hasBeenExpanded, setHasBeenExpanded] = useState(false)
+    const [isEmbedLoaded, setIsEmbedLoaded] = useState(false)
+    const [isScriptLoaded, setIsScriptLoaded] = useState(false)
     const infoDetailRef = useRef<HTMLDivElement>(null)
     const embedContainerRef = useRef<HTMLDivElement>(null)
 
@@ -47,6 +49,8 @@ export default function Information({ cafe, onClose }: InformationProps) {
             setIsExpanded(false)
             setIsClosing(false)
             setHasBeenExpanded(false)
+            // 埋め込みロード状態をリセット
+            setIsEmbedLoaded(false)
 
             // 新しいカフェが選択された時のスクロールリセット
             if (infoDetailRef.current) {
@@ -58,28 +62,76 @@ export default function Information({ cafe, onClose }: InformationProps) {
     // Instagram埋め込みスクリプトを読み込む
     useEffect(() => {
         // スクリプトが既に読み込まれているかチェック
-        if (!document.querySelector('script[src="//www.instagram.com/embed.js"]')) {
+        if (window.instgrm) {
+            setIsScriptLoaded(true)
+        } else if (!document.querySelector('script[src="//www.instagram.com/embed.js"]')) {
             const script = document.createElement('script')
             script.src = '//www.instagram.com/embed.js'
             script.async = true
+            script.onload = () => setIsScriptLoaded(true)
             document.body.appendChild(script)
+        } else {
+            // すでにスクリプトタグはあるが window.instgrm がまだない場合（読み込み中）
+            // ポーリングしてチェック
+            const interval = setInterval(() => {
+                if (window.instgrm) {
+                    setIsScriptLoaded(true)
+                    clearInterval(interval)
+                }
+            }, 100)
+            return () => clearInterval(interval)
         }
     }, [])
 
     // 店舗が変更されたらInstagram埋め込みを再処理
     useEffect(() => {
-        if (detailedCafe?.permalink && window.instgrm) {
-            // 少し遅延させてから埋め込みを処理(DOMの更新を待つ)
-            const timer = setTimeout(() => {
+        // cafe.permalink（軽量データ）または detailedCafe.permalink（詳細データ）があれば処理開始
+        const permalink = cafe.permalink || detailedCafe?.permalink
+
+        if (permalink && isScriptLoaded && window.instgrm) {
+            setIsEmbedLoaded(false) // 再処理開始時に未ロード状態にする
+
+            // DOMの更新を待ってから処理
+            requestAnimationFrame(() => {
                 if (window.instgrm) {
                     window.instgrm.Embeds.process()
                 }
-            }, 100)
-            return () => clearTimeout(timer)
+            })
         }
-    }, [detailedCafe])
+    }, [cafe, detailedCafe, isScriptLoaded])
 
+    // iframeの生成と読み込み完了を監視
+    useEffect(() => {
+        const permalink = cafe.permalink || detailedCafe?.permalink
+        if (!embedContainerRef.current || !permalink) return
 
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes.length > 0) {
+                    mutation.addedNodes.forEach((node) => {
+                        if (node.nodeName === 'IFRAME') {
+                            const iframe = node as HTMLIFrameElement
+
+                            // iframeのloadイベントを監視（コンテンツ読み込み完了を待つ）
+                            iframe.addEventListener('load', () => {
+                                // Instagram側のコンテンツ読み込み完了後に表示
+                                setIsEmbedLoaded(true)
+                            })
+
+                            observer.disconnect()
+                        }
+                    })
+                }
+            })
+        })
+
+        observer.observe(embedContainerRef.current, {
+            childList: true,
+            subtree: true
+        })
+
+        return () => observer.disconnect()
+    }, [cafe, detailedCafe])
 
     // 画像は VIDEO の場合は thumbnail を優先
     const imgSrc = detailedCafe
@@ -171,16 +223,21 @@ export default function Information({ cafe, onClose }: InformationProps) {
 
                 <div className="info__body">
                     {/* Instagram埋め込み */}
-                    {detailedCafe?.permalink ? (
+                    {(cafe.permalink || detailedCafe?.permalink) ? (
                         <div
-                            key={detailedCafe.id}
+                            key={cafe.permalink || detailedCafe?.permalink}
                             className="info__instagram-embed"
                             ref={embedContainerRef}
                         >
+                            {!isEmbedLoaded && (
+                                <div className="info__embed-loading">
+                                    <div className="info__spinner"></div>
+                                </div>
+                            )}
                             <blockquote
                                 className="instagram-media"
                                 data-instgrm-captioned
-                                data-instgrm-permalink={detailedCafe.permalink}
+                                data-instgrm-permalink={cafe.permalink || detailedCafe?.permalink}
                                 data-instgrm-version="14"
                                 style={{
                                     background: '#FFF',
@@ -191,7 +248,8 @@ export default function Information({ cafe, onClose }: InformationProps) {
                                     maxWidth: '540px',
                                     minWidth: '326px',
                                     padding: 0,
-                                    width: 'calc(100% - 2px)'
+                                    width: 'calc(100% - 2px)',
+                                    display: isEmbedLoaded ? 'block' : 'none' // ロード完了まで非表示
                                 }}
                             >
                             </blockquote>
@@ -208,54 +266,58 @@ export default function Information({ cafe, onClose }: InformationProps) {
                             }}
                         />
                     )}
-                    <div className="info__details">
-                        <h4 className="info__section-title">基本情報</h4>
-                        <dl className="info__details-list">
-                            <div className="info__detail-row">
-                                <dt>店名</dt>
-                                <dd>
-                                    <div className="info__text-with-copy">
-                                        <span>{cafe.store_name ?? "—"}</span>
-                                        {cafe.store_name && <CopyButton text={cafe.store_name} />}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div className="info__detail-row">
-                                <dt>住所</dt>
-                                <dd>
-                                    <div className="info__text-with-copy">
-                                        <span>{cafe.address ?? "—"}</span>
-                                        {cafe.address && <CopyButton text={cafe.address} />}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div className="info__detail-row">
-                                <dt>営業時間</dt>
-                                <dd>{detailedCafe?.opening_hours ?? "店舗に直接お問い合わせください"}</dd>
-                            </div>
-                            <div className="info__detail-row">
-                                <dt>定休日</dt>
-                                <dd>{detailedCafe?.regular_holiday ?? "店舗に直接お問い合わせください"}</dd>
-                            </div>
-                        </dl>
-                        <p className="info__note">
-                            ※上記は取材時の情報に基づきます。正確な情報は店舗に直接お問い合わせください。
-                            {detailedCafe?.timestamp && (
-                                <span>
-                                    (取材日:{new Date(detailedCafe.timestamp).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/')})
-                                </span>
-                            )}
 
-                            <a
-                                className="info__correction-link"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                href="https://kadaiinfo.com/contact"
-                            >
-                                情報修正の依頼はこちら
-                            </a>
-                        </p>
-                    </div>
+                    {/* 埋め込みがない場合は即座に表示、ある場合は読み込み完了まで非表示 */}
+                    {(!(cafe.permalink || detailedCafe?.permalink) || isEmbedLoaded) && (
+                        <div className="info__details">
+                            <h4 className="info__section-title">基本情報</h4>
+                            <dl className="info__details-list">
+                                <div className="info__detail-row">
+                                    <dt>店名</dt>
+                                    <dd>
+                                        <div className="info__text-with-copy">
+                                            <span>{cafe.store_name ?? "—"}</span>
+                                            {cafe.store_name && <CopyButton text={cafe.store_name} />}
+                                        </div>
+                                    </dd>
+                                </div>
+                                <div className="info__detail-row">
+                                    <dt>住所</dt>
+                                    <dd>
+                                        <div className="info__text-with-copy">
+                                            <span>{cafe.address ?? "—"}</span>
+                                            {cafe.address && <CopyButton text={cafe.address} />}
+                                        </div>
+                                    </dd>
+                                </div>
+                                <div className="info__detail-row">
+                                    <dt>営業時間</dt>
+                                    <dd>{detailedCafe?.opening_hours ?? "店舗に直接お問い合わせください"}</dd>
+                                </div>
+                                <div className="info__detail-row">
+                                    <dt>定休日</dt>
+                                    <dd>{detailedCafe?.regular_holiday ?? "店舗に直接お問い合わせください"}</dd>
+                                </div>
+                            </dl>
+                            <p className="info__note">
+                                ※上記は取材時の情報に基づきます。正確な情報は店舗に直接お問い合わせください。
+                                {detailedCafe?.timestamp && (
+                                    <span>
+                                        (取材日:{new Date(detailedCafe.timestamp).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/')})
+                                    </span>
+                                )}
+
+                                <a
+                                    className="info__correction-link"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    href="https://kadaiinfo.com/contact"
+                                >
+                                    情報修正の依頼はこちら
+                                </a>
+                            </p>
+                        </div>
+                    )}
 
 
 

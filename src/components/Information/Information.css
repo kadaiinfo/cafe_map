@@ -450,3 +450,39 @@
   background: black;
   color: white;
 }
+
+/* Instagram埋め込みのローディング */
+.info__embed-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #ffffff;
+  border-radius: 3px;
+  margin-bottom: 16px;
+}
+
+.info__spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* 埋め込みコンテナの最小高さを確保してレイアウトシフトを防ぐ */
+.info__instagram-embed {
+  min-height: 300px;
+  transition: min-height 0.3s ease;
+}
