@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react"
 import "./CafeList.css"
 import { getCafeData, type Cafe } from "../../lib/dataClient"
+import { normalizeText } from "../../utils/textNormalization"
+import { hiraganaToRomaji } from "../../utils/romajiUtils"
 
 interface CafeListProps {
   onCafeSelect: (cafe: Cafe) => void
@@ -24,10 +26,16 @@ export default function CafeList({ onCafeSelect, onClose }: CafeListProps) {
   }, [])
 
   // 検索フィルタリング
-  const filteredCafes = allCafes.filter((cafe: Cafe) => 
-    cafe.store_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    cafe.address?.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const filteredCafes = allCafes.filter((cafe: Cafe) => {
+    const normalizedQuery = normalizeText(searchQuery)
+    const romajiQuery = hiraganaToRomaji(normalizedQuery)
+    const normalizedStoreName = normalizeText(cafe.store_name || "")
+    const normalizedAddress = normalizeText(cafe.address || "")
+
+    return normalizedStoreName.includes(normalizedQuery) ||
+      normalizedAddress.includes(normalizedQuery) ||
+      normalizedStoreName.toLowerCase().includes(romajiQuery)
+  })
 
   const handleCafeClick = (cafe: Cafe) => {
     onCafeSelect(cafe)
@@ -37,9 +45,9 @@ export default function CafeList({ onCafeSelect, onClose }: CafeListProps) {
   return (
     <div className="cafe-list">
       <div className="cafe-list__header">
-        <h2 className="cafe-list__title">カフェ一覧</h2>
-        <button 
-          className="cafe-list__close" 
+        <h2 className="cafe-list__title">一覧</h2>
+        <button
+          className="cafe-list__close"
           onClick={onClose}
           aria-label="閉じる"
         >
@@ -61,18 +69,18 @@ export default function CafeList({ onCafeSelect, onClose }: CafeListProps) {
         <div className="cafe-list__count">
           {filteredCafes.length}件のカフェ
         </div>
-        
+
         <div className="cafe-list__items">
           {filteredCafes.map((cafe: Cafe) => (
-            <div 
-              key={cafe.id} 
+            <div
+              key={cafe.id}
               className="cafe-list__item"
               onClick={() => handleCafeClick(cafe)}
             >
               {cafe.media_url && (
-                <img 
-                  src={cafe.media_url} 
-                  alt={cafe.store_name || "cafe"} 
+                <img
+                  src={cafe.media_url}
+                  alt={cafe.store_name || "cafe"}
                   className="cafe-list__item-image"
                   onError={(e) => {
                     (e.currentTarget as HTMLImageElement).style.display = "none"
