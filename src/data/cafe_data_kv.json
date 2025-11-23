@@ -12,7 +12,9 @@
     "username": "kadai_info",
     "like_count": 155,
     "comments_count": 0,
-    "media_type": "CAROUSEL_ALBUM"
+    "media_type": "CAROUSEL_ALBUM",
+    "opening_hours": "11:30-15:00",
+    "regular_holiday": "不定休"
   },
   {
     "id": "18068468020962284",

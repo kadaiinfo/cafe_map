@@ -45,6 +45,8 @@ export type DetailedCafe = {
     like_count?: number
     comments_count?: number
     timestamp?: string
+    opening_hours?: string | null
+    regular_holiday?: string | null
 }
 
 // APIから取得したデータのキャッシュ

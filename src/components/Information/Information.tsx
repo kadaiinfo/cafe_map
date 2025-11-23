@@ -207,55 +207,88 @@ export default function Information({ cafe, onClose }: InformationProps) {
                             }}
                         />
                     )}
+                    <div className="info__details">
+                        <h4 className="info__section-title">基本情報</h4>
+                        <dl className="info__details-list">
+                            <div className="info__detail-row">
+                                <dt>店名</dt>
+                                <dd>
+                                    <div className="info__text-with-copy">
+                                        <span>{cafe.store_name ?? "—"}</span>
+                                        {cafe.store_name && <CopyButton text={cafe.store_name} />}
+                                    </div>
+                                </dd>
+                            </div>
+                            <div className="info__detail-row">
+                                <dt>住所</dt>
+                                <dd>
+                                    <div className="info__text-with-copy">
+                                        <span>{cafe.address ?? "—"}</span>
+                                        {cafe.address && <CopyButton text={cafe.address} />}
+                                    </div>
+                                </dd>
+                            </div>
+                            <div className="info__detail-row">
+                                <dt>営業時間</dt>
+                                <dd>{detailedCafe?.opening_hours ?? "店舗に直接お問い合わせください"}</dd>
+                            </div>
+                            <div className="info__detail-row">
+                                <dt>定休日</dt>
+                                <dd>{detailedCafe?.regular_holiday ?? "店舗に直接お問い合わせください"}</dd>
+                            </div>
+                        </dl>
+                        <p className="info__note">
+                            ※上記は取材時の情報に基づきます。正確な情報は店舗に直接お問い合わせください。
+                            {detailedCafe?.timestamp && (
+                                <span>
+                                    (取材日:{new Date(detailedCafe.timestamp).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/')})
+                                </span>
+                            )}
 
-                    <dl className="info__list">
-                        <div>
-                            <dt>店舗名</dt>
-                            <dd>{cafe.store_name ?? "—"}</dd>
-                        </div>
-                        <div>
-                            <dt>住所</dt>
-                            <dd>{cafe.address ?? "—"}</dd>
-                        </div>
-                    </dl>
-
-                    {detailedCafe?.timestamp && (
-                        <p className="info__date">
-                            取材日:{new Date(detailedCafe.timestamp).toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '/')}
+                            <a
+                                className="info__correction-link"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                href="https://kadaiinfo.com/contact"
+                            >
+                                情報修正の依頼はこちら
+                            </a>
                         </p>
-                    )}
-
-                    {detailedCafe?.permalink && (
-                        <a
-                            className="info__link"
-                            href={detailedCafe.permalink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Instagramで見る
-                        </a>
-                    )}
-
-                    {/* 検索リンク */}
-                    <a
-                        className="info__link"
-                        href={`https://www.google.com/search?q=${encodeURIComponent((cafe.store_name || '') + ' 鹿児島')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Google検索
-                    </a>
+                    </div>
 
 
-                    <a
-                        className="info__link"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        情報修正の依頼はこちら
-                    </a>
+
                 </div>
             </div>
-        </aside>
+        </aside >
     )
 }
+
+const CopyButton = ({ text }: { text: string }) => {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(text);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+        }
+    };
+
+    return (
+        <button className="info__copy-button" onClick={handleCopy} aria-label="コピー">
+            {copied ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+            )}
+        </button>
+    );
+};
