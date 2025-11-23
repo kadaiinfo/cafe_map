@@ -283,6 +283,30 @@
   margin-bottom: 16px;
 }
 
+/* Instagram埋め込み用のスタイル */
+.info__instagram-embed {
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.info__instagram-embed .instagram-media {
+  margin: 1px auto !important;
+  max-width: 100% !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.info__instagram-embed iframe {
+  border: none !important;
+}
+
+@media (max-width: 768px) {
+  .info__instagram-embed {
+    margin-bottom: 20px;
+  }
+}
+
+
 .info__list {
   margin: 0 0 16px 0;
 }

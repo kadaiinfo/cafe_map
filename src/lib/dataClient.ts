@@ -37,6 +37,7 @@ export type DetailedCafe = {
     media_url?: string | null
     thumbnail_url?: string | null
     permalink?: string | null
+    embed_html?: string | null
     username?: string | null
     lat: number
     lng: number
