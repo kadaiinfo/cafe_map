@@ -36,6 +36,17 @@
 /* プレビュー部分（下部に固定表示） */
 .info__preview {
   display: none;
+  position: relative;
+  /* enable absolute positioning of overlay */
+}
+
+.info__preview-tap {
+  position: absolute;
+  top: -50px;
+  right: -8px;
+  width: 20px;
+  height: auto;
+  pointer-events: none;
 }
 
 @media (max-width: 768px) {

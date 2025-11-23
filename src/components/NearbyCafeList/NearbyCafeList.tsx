@@ -19,11 +19,11 @@ const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: numbe
   const R = 6371000 // 地球の半径（メートル）
   const dLat = (lat2 - lat1) * Math.PI / 180
   const dLng = (lng2 - lng1) * Math.PI / 180
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLng/2) * Math.sin(dLng/2)
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng / 2) * Math.sin(dLng / 2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
   return R * c
 }
 
@@ -49,9 +49,9 @@ export default function NearbyCafeList({ onCafeSelect, onClose }: NearbyCafeList
         // 500m以内のカフェをフィルタリング
         const nearby = allCafes.filter(cafe => {
           const distance = calculateDistance(
-            location.lat, 
-            location.lng, 
-            cafe.lat, 
+            location.lat,
+            location.lng,
+            cafe.lat,
             cafe.lng
           )
           return distance <= 500 // 500m以内
@@ -84,20 +84,20 @@ export default function NearbyCafeList({ onCafeSelect, onClose }: NearbyCafeList
   const getDistanceText = (cafe: Cafe): string => {
     if (!userLocation) return ""
     const distance = calculateDistance(
-      userLocation.lat, 
-      userLocation.lng, 
-      cafe.lat, 
+      userLocation.lat,
+      userLocation.lng,
+      cafe.lat,
       cafe.lng
     )
-    return `${Math.round(distance)}m`
+    return `現在地から${Math.round(distance)}m`
   }
 
   return (
     <div className="nearby-cafe-list">
       <div className="nearby-cafe-list__header">
         <h2 className="nearby-cafe-list__title">近くのご飯屋さん</h2>
-        <button 
-          className="nearby-cafe-list__close" 
+        <button
+          className="nearby-cafe-list__close"
           onClick={onClose}
           aria-label="閉じる"
         >
@@ -123,7 +123,7 @@ export default function NearbyCafeList({ onCafeSelect, onClose }: NearbyCafeList
             <div className="nearby-cafe-list__count">
               500m内に {nearbyCafes.length}件のご飯屋さん
             </div>
-            
+
             {nearbyCafes.length === 0 ? (
               <div className="nearby-cafe-list__empty">
                 近くにご飯屋さんが見つかりませんでした
@@ -131,15 +131,15 @@ export default function NearbyCafeList({ onCafeSelect, onClose }: NearbyCafeList
             ) : (
               <div className="nearby-cafe-list__items">
                 {nearbyCafes.map((cafe: Cafe) => (
-                  <div 
-                    key={cafe.id} 
+                  <div
+                    key={cafe.id}
                     className="nearby-cafe-list__item"
                     onClick={() => handleCafeClick(cafe)}
                   >
                     {cafe.media_url && (
-                      <img 
-                        src={cafe.media_url} 
-                        alt={cafe.store_name || "cafe"} 
+                      <img
+                        src={cafe.media_url}
+                        alt={cafe.store_name || "cafe"}
                         className="nearby-cafe-list__item-image"
                         onError={(e) => {
                           (e.currentTarget as HTMLImageElement).style.display = "none"

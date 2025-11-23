@@ -24,6 +24,7 @@ export default function Information({ cafe, onClose }: InformationProps) {
     const [isExpanded, setIsExpanded] = useState(false)
     const [isClosing, setIsClosing] = useState(false)
     const [isMobile, setIsMobile] = useState(false)
+    const [hasBeenExpanded, setHasBeenExpanded] = useState(false)
     const infoDetailRef = useRef<HTMLDivElement>(null)
     const embedContainerRef = useRef<HTMLDivElement>(null)
 
@@ -45,6 +46,7 @@ export default function Information({ cafe, onClose }: InformationProps) {
             // 展開状態をリセット(モバイルの場合)
             setIsExpanded(false)
             setIsClosing(false)
+            setHasBeenExpanded(false)
 
             // 新しいカフェが選択された時のスクロールリセット
             if (infoDetailRef.current) {
@@ -113,6 +115,7 @@ export default function Information({ cafe, onClose }: InformationProps) {
         } else {
             // 開く際はすぐに展開
             setIsExpanded(true)
+            setHasBeenExpanded(true)
 
             // スライドを開く際にスクロールを一番上にリセット
             setTimeout(() => {
@@ -149,6 +152,7 @@ export default function Information({ cafe, onClose }: InformationProps) {
         <aside className={`info ${isExpanded ? 'info--expanded' : 'info--collapsed'} ${isClosing ? 'info--closing' : ''}`}>
             {/* スマホ版:下部に固定表示される簡易情報 */}
             <div className="info__preview" onClick={handleToggle}>
+                {!hasBeenExpanded && <img src="/tap.png" className="info__preview-tap" alt="tap" />}
                 <div className="info__preview-content">
                     <h3 className="info__preview-title">{cafe.store_name ?? "—"}</h3>
                     <p className="info__preview-address">{cafe.address ?? "—"}</p>
