@@ -34,8 +34,8 @@
 .maplibregl-popup-content {
   background: white;
   /* 背景色：白 */
-  border: 1.5px solid black !important;
-  /* 枠線：黒、太さ1.5px */
+  border: none !important;
+  /* 枠線：なし */
   border-radius: 4px;
   /* 角丸：4px */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

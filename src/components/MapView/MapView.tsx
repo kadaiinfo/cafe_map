@@ -1,4 +1,4 @@
-import { useState,useEffect, useRef, useCallback } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import maplibregl from "maplibre-gl"
 import "maplibre-gl/dist/maplibre-gl.css"
 import "./MapView.css"
@@ -146,10 +146,10 @@ export default function MapView() {
         setIsLocating(true)
         try {
             const location = await getCurrentLocation()
-            
+
             // 現在地マーカーを更新
             updateUserLocationMarker(mapRef.current, location, userLocationMarkerRef)
-            
+
             // 地図を現在地に移動
             moveToUserLocation(mapRef.current, location, DEFAULT_ZOOM_LEVEL)
         } catch (error) {
@@ -172,14 +172,14 @@ export default function MapView() {
 
         // maplibregl.Map で地図を生成し，mapRef.currentに保持する
         const map = new maplibregl.Map({
-        container: mapContainerRef.current, // マップを表示するHTML要素を指定する
-        style: "https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json", // 地図のスタイルを指定（日中モード）
-        center: initialCenter, // 地図の中心座標（保存された位置または初期位置）
-        zoom: initialZoom, // 地図のズームレベル（保存されたズームまたは初期ズーム）
+            container: mapContainerRef.current, // マップを表示するHTML要素を指定する
+            style: "https://tile.openstreetmap.jp/styles/osm-bright-ja/style.json", // 地図のスタイルを指定（日中モード）
+            center: initialCenter, // 地図の中心座標（保存された位置または初期位置）
+            zoom: initialZoom, // 地図のズームレベル（保存されたズームまたは初期ズーム）
         })
-        
+
         mapRef.current = map
-        
+
         // マップの読み込み完了を待つ
         map.on('load', () => {
             setMapLoaded(true)
@@ -197,7 +197,7 @@ export default function MapView() {
             // 位置変更を保存
             saveMapState([center.lng, center.lat], currentMapZoom)
         }
-        
+
         // ズーム操作が完了した時に呼ばれるコールバック関数
         const handleZoomEnd = () => {
             const newZoom = map.getZoom() // 現在のzoomレベルを保存
@@ -205,7 +205,7 @@ export default function MapView() {
             setCurrentZoom(newZoom) // 変更を反映
             saveMapState([center.lng, center.lat], newZoom) //ローカルストレージに保存
         }
-        
+
         // maplibregl.Map が提供するイベントにリスナー
         map.on('moveend', handleMoveEnd) // ユーザーが地図をドラッグして移動し終わったときに handleMoveEnd を実行
         map.on('zoomend', handleZoomEnd) // ユーザーが地図のズーム操作を終えたときに handleZoomEnd を実行
@@ -234,7 +234,7 @@ export default function MapView() {
         }
     }, [currentZoom, mapCenter, updateMarkers, cafeDataLoaded, mapLoaded]) //どれか更新が入ると処理が走る
 
-    
+
     // ポップアップ表示制御（カフェ選択状態変更時に毎回実行）
     useEffect(() => {
         console.log('selected changed:', selected?.store_name || 'null')
@@ -243,7 +243,7 @@ export default function MapView() {
         } else {
             hidePopup(currentPopupRef)
         }
-    }, [selected]) 
+    }, [selected])
 
 
 
@@ -252,8 +252,8 @@ export default function MapView() {
     return (
         <div className="map-layout">
             {/* 検索欄の表示 */}
-            <Search 
-                onSearch={handleSearchAction} 
+            <Search
+                onSearch={handleSearchAction}
                 onSettingsClick={handleSettingsClick}
                 onLocationClick={handleLocationClick}
                 isLocating={isLocating}
@@ -283,7 +283,7 @@ export default function MapView() {
 
             {/* 設定パネルの表示 */}
             {showMixerPanel && (
-                <MixerPanel 
+                <MixerPanel
                     onClose={handleCloseMixerPanel}
                     onShowCafeList={handleShowCafeList}
                     onAreaSelect={handleAreaSelect}
@@ -293,7 +293,7 @@ export default function MapView() {
 
             {/* 店舗リストの表示 */}
             {showCafeList && (
-                <CafeList 
+                <CafeList
                     onCafeSelect={handleCafeSelect}
                     onClose={handleCloseCafeList}
                 />
@@ -301,7 +301,7 @@ export default function MapView() {
 
             {/* 近くの店舗リストの表示 */}
             {showNearbyCafeList && (
-                <NearbyCafeList 
+                <NearbyCafeList
                     onCafeSelect={handleCafeSelect}
                     onClose={handleCloseNearbyCafeList}
                 />
