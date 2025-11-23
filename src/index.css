@@ -29,6 +29,8 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  /* プルtoリフレッシュを無効化 */
+  overscroll-behavior-y: contain;
 }
 
 h1 {
@@ -70,4 +72,14 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* 全体的なプルtoリフレッシュ無効化 */
+html, body {
+  overscroll-behavior: none;
+}
+
+/* 特にモバイルブラウザ向け */
+* {
+  overscroll-behavior: none;
 }
