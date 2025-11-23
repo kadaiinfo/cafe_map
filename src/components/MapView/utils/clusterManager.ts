@@ -184,11 +184,20 @@ export const updateClusterMarkers = (
           console.log('Cluster clicked:', properties?.count, 'cafes')
           
           if (properties?.count === 1) {
-            // 単一カフェの場合は詳細表示
-            const currentClusters = createCafeClusters(allCafes, zoom)
-            const cluster = currentClusters.find(c => c.id === properties.id)
-            if (cluster && cluster.cafes.length > 0) {
-              setSelected(cluster.cafes[0])
+            // 単一カフェの場合もズームインしてから詳細表示
+            if (feature.geometry.type === 'Point') {
+              const coordinates = feature.geometry.coordinates as [number, number]
+              map.flyTo({
+                center: coordinates,
+                zoom: Math.min(zoom + 2, 18)
+              })
+              
+              // ズーム完了後に詳細表示
+              const currentClusters = createCafeClusters(allCafes, zoom)
+              const cluster = currentClusters.find(c => c.id === properties.id)
+              if (cluster && cluster.cafes.length > 0) {
+                setSelected(cluster.cafes[0])
+              }
             }
           } else {
             // 複数カフェの場合はズームイン
