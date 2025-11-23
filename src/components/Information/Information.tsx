@@ -157,9 +157,6 @@ export default function Information({ cafe, onClose }: InformationProps) {
                     <h3 className="info__preview-title">{cafe.store_name ?? "—"}</h3>
                     <p className="info__preview-address">{cafe.address ?? "—"}</p>
                 </div>
-                <div className="info__preview-arrow">
-                    {isExpanded || isClosing ? '▼' : '▲'}
-                </div>
             </div>
 
             {/* 全画面表示される詳細情報 */}
