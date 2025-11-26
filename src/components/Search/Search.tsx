@@ -26,7 +26,9 @@ export default function Search({
   const [query, setQuery] = useState("")
   const [suggestions, setSuggestions] = useState<Cafe[]>([])
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(-1)
   const searchRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLUListElement>(null)
   const isSelectionRef = useRef(false)
 
   // クリック外側の検知
@@ -42,6 +44,16 @@ export default function Search({
     }
   }, [])
 
+  // 選択インデックスが変わったらスクロール位置を調整
+  useEffect(() => {
+    if (selectedIndex >= 0 && listRef.current) {
+      const selectedElement = listRef.current.children[selectedIndex] as HTMLElement
+      if (selectedElement) {
+        selectedElement.scrollIntoView({ block: "nearest" })
+      }
+    }
+  }, [selectedIndex])
+
   // 検索クエリが変わったらサジェストを更新
   useEffect(() => {
     if (isSelectionRef.current) {
@@ -51,6 +63,7 @@ export default function Search({
 
     if (!query.trim() || !cafes.length) {
       setSuggestions([])
+      setSelectedIndex(-1)
       return
     }
 
@@ -67,18 +80,36 @@ export default function Search({
     })
     setSuggestions(filtered)
     setShowSuggestions(true)
+    setSelectedIndex(-1)
   }, [query, cafes])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    if (selectedIndex >= 0 && suggestions[selectedIndex]) {
+      handleSuggestionClick(suggestions[selectedIndex])
+      return
+    }
     setShowSuggestions(false)
     onSearch(query)
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault()
+      setSelectedIndex(prev => (prev < suggestions.length - 1 ? prev + 1 : prev))
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault()
+      setSelectedIndex(prev => (prev > -1 ? prev - 1 : -1))
+    } else if (e.key === "Escape") {
+      setShowSuggestions(false)
+    }
   }
 
   const handleSuggestionClick = (cafe: Cafe) => {
     isSelectionRef.current = true
     setQuery(cafe.store_name || "")
     setShowSuggestions(false)
+    setSelectedIndex(-1)
     if (onSuggestionSelect) {
       onSuggestionSelect(cafe)
     }
@@ -96,6 +127,7 @@ export default function Search({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
             onFocus={() => {
               if (query.trim() && suggestions.length > 0) {
                 setShowSuggestions(true)
@@ -133,11 +165,11 @@ export default function Search({
 
       {/* サジェストリスト */}
       {showSuggestions && suggestions.length > 0 && (
-        <ul className="search-suggestions">
-          {suggestions.map((cafe) => (
+        <ul className="search-suggestions" ref={listRef}>
+          {suggestions.map((cafe, index) => (
             <li
               key={cafe.id}
-              className="search-suggestion-item"
+              className={`search-suggestion-item ${index === selectedIndex ? "selected" : ""}`}
               onClick={() => handleSuggestionClick(cafe)}
             >
               <div className="search-suggestion-name">{cafe.store_name || "—"}</div>

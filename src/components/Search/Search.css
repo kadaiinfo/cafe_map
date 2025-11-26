@@ -253,7 +253,8 @@
   border-bottom: none;
 }
 
-.search-suggestion-item:hover {
+.search-suggestion-item:hover,
+.search-suggestion-item.selected {
   background-color: #f8f9fa;
 }
 
