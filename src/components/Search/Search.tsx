@@ -86,6 +86,9 @@ export default function Search({
 
   return (
     <div className="search-container" ref={searchRef}>
+      {/* <div className="search-logo-container">
+        <img src="/test_logo.png" alt="Logo" className="search-logo" />
+      </div> */}
       <form onSubmit={handleSubmit} className="search-form">
         <div className="search-input-container">
           {/* <img src={iconImage} alt="検索アイコン" className="search-icon" /> */}

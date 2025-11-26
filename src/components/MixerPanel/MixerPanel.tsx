@@ -1,4 +1,3 @@
-import { useState } from "react"
 import "./MixerPanel.css"
 
 interface MixerPanelProps {
@@ -9,7 +8,6 @@ interface MixerPanelProps {
 }
 
 export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onShowNearbyCafes }: MixerPanelProps) {
-  const [selectedArea, setSelectedArea] = useState<string>("")
 
   const areas = [
     { id: "uptown", name: "騎射場", lng: 130.5520733, lat: 31.5692252 },
@@ -24,7 +22,6 @@ export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onSh
   ]
 
   const handleAreaClick = (area: typeof areas[0]) => {
-    setSelectedArea(area.id)
     onAreaSelect(area.lng, area.lat)
     onClose() // エリア選択後にパネルを閉じる
   }
@@ -34,8 +31,8 @@ export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onSh
     <div className="mixer-panel">
       <div className="mixer-panel__header">
         <h2 className="mixer-panel__title">表示設定</h2>
-        <button 
-          className="mixer-panel__close" 
+        <button
+          className="mixer-panel__close"
           onClick={onClose}
           aria-label="閉じる"
         >
@@ -45,44 +42,107 @@ export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onSh
 
       {/* 表示オプションセクション */}
       <div className="mixer-panel__section">
-          <h3 className="mixer-panel__section-title">表示オプション</h3>
-          <div className="mixer-panel__options">
-            <button 
-              className="mixer-panel__option-button"
-              onClick={onShowCafeList}
-            >
-              <div className="mixer-panel__option-content">
-                <div className="mixer-panel__option-title">リスト表示</div>
-                <div className="mixer-panel__option-desc">ご飯屋さんを一覧で表示</div>
-              </div>
-            </button>
-            
-            <button 
-              className="mixer-panel__option-button"
-              onClick={onShowNearbyCafes}
-            >
-              <div className="mixer-panel__option-content">
-                <div className="mixer-panel__option-title">近くのお店を表示</div>
-                <div className="mixer-panel__option-desc">500m内のご飯屋さんを表示</div>
-              </div>
-            </button>
-          </div>
+        <h3 className="mixer-panel__section-title">表示オプション</h3>
+        <div className="mixer-panel__options">
+          <button
+            className="mixer-panel__option-button"
+            onClick={onShowCafeList}
+          >
+            <div className="mixer-panel__option-content">
+              <div className="mixer-panel__option-title">リスト表示</div>
+              <div className="mixer-panel__option-desc">ご飯屋さんを一覧で表示</div>
+            </div>
+          </button>
+
+          <button
+            className="mixer-panel__option-button"
+            onClick={onShowNearbyCafes}
+          >
+            <div className="mixer-panel__option-content">
+              <div className="mixer-panel__option-title">近くのお店を表示</div>
+              <div className="mixer-panel__option-desc">500m内のご飯屋さんを表示</div>
+            </div>
+          </button>
         </div>
+      </div>
 
       <div className="mixer-panel__body">
         {/* エリア選択セクション */}
         <div className="mixer-panel__section">
           <h3 className="mixer-panel__section-title">エリアに移動</h3>
-          <div className="mixer-panel__area-list">
-            {areas.map((area) => (
-              <button
-                key={area.id}
-                className={`mixer-panel__area-button ${selectedArea === area.id ? 'mixer-panel__area-button--selected' : ''}`}
-                onClick={() => handleAreaClick(area)}
-              >
-                {area.name}
-              </button>
-            ))}
+
+          {/* インタラクティブマップ */}
+          <div className="mixer-panel__interactive-map">
+            <img
+              src="/information_map.png"
+              alt="エリアマップ"
+              className="mixer-panel__area-map"
+            />
+
+            {/* 地図上のクリック可能なエリア */}
+            <button
+              className="mixer-panel__map-hotspot"
+              style={{ top: '1%', left: '55%', width: '20%', height: '10%' }}
+              onClick={() => handleAreaClick(areas.find(a => a.id === 'aira')!)}
+              title="姶良"
+              aria-label="姶良エリアに移動"
+            />
+            <button
+              className="mixer-panel__map-hotspot"
+              style={{ top: '1%', left: '78%', width: '20%', height: '10%' }}
+              onClick={() => handleAreaClick(areas.find(a => a.id === 'kirisima')!)}
+              title="国分"
+              aria-label="国分エリアに移動"
+            />
+            <button
+              className="mixer-panel__map-hotspot"
+              style={{ top: '58%', left: '30%', width: '20%', height: '10%' }}
+              onClick={() => handleAreaClick(areas.find(a => a.id === 'uptown')!)}
+              title="騎射場"
+              aria-label="騎射場エリアに移動"
+            />
+            <button
+              className="mixer-panel__map-hotspot"
+              style={{ top: '30%', left: '20%', width: '20%', height: '10%' }}
+              onClick={() => handleAreaClick(areas.find(a => a.id === 'all')!)}
+              title="中央駅"
+              aria-label="中央駅エリアに移動"
+            />
+            <button
+              className="mixer-panel__map-hotspot"
+              style={{ top: '20%', left: '45%', width: '20%', height: '10%' }}
+              onClick={() => handleAreaClick(areas.find(a => a.id === 'central')!)}
+              title="天文館"
+              aria-label="天文館エリアに移動"
+            />
+            <button
+              className="mixer-panel__map-hotspot"
+              style={{ top: '13%', left: '58%', width: '20%', height: '10%' }}
+              onClick={() => handleAreaClick(areas.find(a => a.id === 'riverside')!)}
+              title="名山"
+              aria-label="名山エリアに移動"
+            />
+            <button
+              className="mixer-panel__map-hotspot"
+              style={{ top: '89%', left: '25%', width: '20%', height: '10%' }}
+              onClick={() => handleAreaClick(areas.find(a => a.id === 'downtown')!)}
+              title="谷山"
+              aria-label="谷山エリアに移動"
+            />
+            <button
+              className="mixer-panel__map-hotspot"
+              style={{ top: '89%', left: '50%', width: '20%', height: '10%' }}
+              onClick={() => handleAreaClick(areas.find(a => a.id === 'ibusuki')!)}
+              title="指宿"
+              aria-label="指宿エリアに移動"
+            />
+            <button
+              className="mixer-panel__map-hotspot"
+              style={{ top: '1%', left: '1%', width: '20%', height: '10%' }}
+              onClick={() => handleAreaClick(areas.find(a => a.id === 'sendai')!)}
+              title="川内"
+              aria-label="川内エリアに移動"
+            />
           </div>
         </div>
       </div>

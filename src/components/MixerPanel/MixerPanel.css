@@ -148,6 +148,41 @@
   border-color: #0056b3;
 }
 
+/* エリアマップ画像 */
+.mixer-panel__interactive-map {
+  position: relative;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.mixer-panel__area-map {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  display: block;
+}
+
+/* 地図上のクリック可能なエリア */
+.mixer-panel__map-hotspot {
+  position: absolute;
+  background: white;
+  border: 1.5px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.mixer-panel__map-hotspot:hover {
+  background: #f8f9fa;
+  border-color: #007bff;
+}
+
+.mixer-panel__map-hotspot:active {
+  background: #e9ecef;
+  border-color: #0056b3;
+}
+
 /* 表示オプション */
 .mixer-panel__options {
   display: flex;
