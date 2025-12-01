@@ -44,6 +44,7 @@ export default function MapView() {
     const [mapCenter, setMapCenter] = useState<[number, number] | null>(null) // 地図中心位置の状態
     const [isLocating, setIsLocating] = useState(false) // 位置情報取得中の状態
     const userLocationMarkerRef = useRef<maplibregl.Marker | null>(null) // 現在地マーカーの参照
+    const [expandTrigger, setExpandTrigger] = useState(0) // 詳細パネル展開のトリガー
 
     // カフェデータを読み込む（コンポーネント初回マウント時のみ）
     useEffect(() => {
@@ -235,15 +236,20 @@ export default function MapView() {
     }, [currentZoom, mapCenter, updateMarkers, cafeDataLoaded, mapLoaded]) //どれか更新が入ると処理が走る
 
 
+    // ポップアップクリック時の処理
+    const handlePopupClick = useCallback(() => {
+        setExpandTrigger(prev => prev + 1)
+    }, [])
+
     // ポップアップ表示制御（カフェ選択状態変更時に毎回実行）
     useEffect(() => {
         console.log('selected changed:', selected?.store_name || 'null')
         if (selected) {
-            showPopup(selected, mapRef.current, currentPopupRef)
+            showPopup(selected, mapRef.current, currentPopupRef, handlePopupClick)
         } else {
             hidePopup(currentPopupRef)
         }
-    }, [selected])
+    }, [selected, handlePopupClick])
 
 
 
@@ -281,7 +287,7 @@ export default function MapView() {
 
 
             {/* InformationUIの表示 */}
-            {selected && <Information cafe={selected} onClose={() => setSelected(null)} />}
+            {selected && <Information cafe={selected} onClose={() => setSelected(null)} expandTrigger={expandTrigger} />}
 
             {/* 設定パネルの表示 */}
             {showMixerPanel && (

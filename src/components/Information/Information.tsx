@@ -17,9 +17,10 @@ declare global {
 type InformationProps = {
     cafe: Cafe
     onClose?: () => void
+    expandTrigger?: number
 }
 
-export default function Information({ cafe, onClose }: InformationProps) {
+export default function Information({ cafe, onClose, expandTrigger = 0 }: InformationProps) {
     const [detailedCafe, setDetailedCafe] = useState<DetailedCafe | null>(null)
     const [isExpanded, setIsExpanded] = useState(false)
     const [isClosing, setIsClosing] = useState(false)
@@ -29,6 +30,22 @@ export default function Information({ cafe, onClose }: InformationProps) {
     const [isScriptLoaded, setIsScriptLoaded] = useState(false)
     const infoDetailRef = useRef<HTMLDivElement>(null)
     const embedContainerRef = useRef<HTMLDivElement>(null)
+
+    // 外部からの展開トリガーを監視
+    useEffect(() => {
+        if (expandTrigger > 0) {
+            setIsExpanded(true)
+            setHasBeenExpanded(true)
+
+            // スライドを開く際にスクロールを一番上にリセット
+            setTimeout(() => {
+                if (infoDetailRef.current) {
+                    infoDetailRef.current.scrollTop = 0
+                    infoDetailRef.current.scrollTo(0, 0)
+                }
+            }, 0)
+        }
+    }, [expandTrigger])
 
     // 詳細データを遅延読み込み
     useEffect(() => {
