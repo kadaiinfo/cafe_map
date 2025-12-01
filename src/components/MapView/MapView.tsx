@@ -211,6 +211,12 @@ export default function MapView() {
         map.on('moveend', handleMoveEnd) // ユーザーが地図をドラッグして移動し終わったときに handleMoveEnd を実行
         map.on('zoomend', handleZoomEnd) // ユーザーが地図のズーム操作を終えたときに handleZoomEnd を実行
 
+        // 地図の背景クリック時の処理
+        map.on('click', () => {
+            console.log('Map background clicked')
+            setSelected(null)
+        })
+
         // クリーンアップ関数：useEffectが終了するときmapをremoveする
         return () => {
             map.off('moveend', handleMoveEnd)

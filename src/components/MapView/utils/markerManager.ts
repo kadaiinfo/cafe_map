@@ -16,7 +16,7 @@ export const updateMarkersWithZoom = (
   setSelected: (cafe: Cafe) => void
 ) => {
   console.log('updateMarkersWithZoom called:', { zoom, ZOOM_THRESHOLD, cafeDataLoaded, allCafesLength: allCafes.length })
-  
+
   if (!map || !cafeDataLoaded) {
     console.log('Early return: map or data not ready')
     return
@@ -30,7 +30,7 @@ export const updateMarkersWithZoom = (
       marker.remove()
     })
     currentMarkers.clear()
-    
+
     updateClusterMarkers(zoom, map, cafeDataLoaded, allCafes, ZOOM_THRESHOLD, setSelected)
     return
   }
@@ -52,7 +52,7 @@ export const updateMarkersWithZoom = (
 
   // 現在表示されているマーカーのIDセット
   const visibleCafeIds = new Set(visibleCafes.map(cafe => cafe.id))
-  
+
   // 表示範囲外のマーカーを削除
   currentMarkers.forEach((marker, id) => {
     if (!visibleCafeIds.has(id)) {
@@ -68,14 +68,15 @@ export const updateMarkersWithZoom = (
       const marker = new maplibregl.Marker({ element: markerEl })
         .setLngLat([cafe.lng, cafe.lat])
         .addTo(map)
-      
+
       currentMarkers.set(cafe.id, marker)
-      
+
       // マーカークリック時の処理
-      markerEl.addEventListener('click', () => {
+      markerEl.addEventListener('click', (e) => {
+        e.stopPropagation() // 地図へのクリック伝播を防ぐ
         console.log('Marker clicked:', cafe.store_name)
         handleCafeSelection(cafe, map, setSelected, true) // maintainZoom: true
-        
+
         // マーカークリック時の処理完了
       })
     }

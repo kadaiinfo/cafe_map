@@ -25,6 +25,7 @@ export const showPopup = (
   const popup = new maplibregl.Popup({
     offset: 35,
     closeButton: false,
+    closeOnClick: false, // 地図クリックで閉じないようにする（MapView側で制御）
     className: 'custom-popup'
   }).setText(cafe.store_name || 'カフェ')
 
