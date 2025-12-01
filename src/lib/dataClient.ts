@@ -29,6 +29,7 @@ export type Cafe = {
     address: string | null
     media_url: string | null  // サムネイル用
     permalink: string | null // 埋め込み用リンク（高速化のため追加）
+    timestamp?: string // ソート用
 }
 
 // 詳細データ構造（Informationパネル用の型を定義）
@@ -99,7 +100,8 @@ const generateCafeData = (apiData: CafeDataFromAPI[]): Cafe[] => {
         store_name: cafe.store_name ?? null,
         address: cafe.address ?? null,
         media_url: cafe.media_type === "VIDEO" ? cafe.thumbnail_url ?? null : cafe.media_url ?? null,
-        permalink: cafe.permalink ?? null
+        permalink: cafe.permalink ?? null,
+        timestamp: cafe.timestamp
     }))
 }
 
@@ -110,7 +112,16 @@ export const getCafeData = async (): Promise<Cafe[]> => {
     }
 
     const apiData = await fetchCafeDataFromAPI()
-    cafeDataCache = generateCafeData(apiData)
+    const cafes = generateCafeData(apiData)
+
+    // 日付順（新しい順）にソート
+    cafes.sort((a, b) => {
+        if (!a.timestamp) return 1
+        if (!b.timestamp) return -1
+        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+    })
+
+    cafeDataCache = cafes
     return cafeDataCache
 }
 
