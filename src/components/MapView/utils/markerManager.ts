@@ -15,10 +15,8 @@ export const updateMarkersWithZoom = (
   markersRef: React.MutableRefObject<Map<string, maplibregl.Marker>>,
   setSelected: (cafe: Cafe) => void
 ) => {
-  console.log('updateMarkersWithZoom called:', { zoom, ZOOM_THRESHOLD, cafeDataLoaded, allCafesLength: allCafes.length })
 
   if (!map || !cafeDataLoaded) {
-    console.log('Early return: map or data not ready')
     return
   }
 
@@ -47,7 +45,6 @@ export const updateMarkersWithZoom = (
   }
 
   const visibleCafes = getVisibleCafes(map, allCafes, cafeDataLoaded)
-  console.log('Visible cafes found:', visibleCafes.length)
   const currentMarkers = markersRef.current
 
   // 現在表示されているマーカーのIDセット
@@ -74,7 +71,6 @@ export const updateMarkersWithZoom = (
       // マーカークリック時の処理
       markerEl.addEventListener('click', (e) => {
         e.stopPropagation() // 地図へのクリック伝播を防ぐ
-        console.log('Marker clicked:', cafe.store_name)
         handleCafeSelection(cafe, map, setSelected, true) // maintainZoom: true
 
         // マーカークリック時の処理完了

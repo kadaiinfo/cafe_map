@@ -8,15 +8,12 @@ export const showPopup = (
   currentPopupRef: React.MutableRefObject<maplibregl.Popup | null>,
   onPopupClick?: () => void
 ) => {
-  console.log('showPopup called with cafe:', cafe.store_name, 'mapRef:', !!map)
   if (!map) {
-    console.log('mapRef.current is null, returning')
     return
   }
 
   // 既存のポップアップがあれば削除
   if (currentPopupRef.current) {
-    console.log('Removing existing popup')
     currentPopupRef.current.remove()
     currentPopupRef.current = null
   }
@@ -29,14 +26,11 @@ export const showPopup = (
     className: 'custom-popup'
   }).setText(cafe.store_name || 'カフェ')
 
-  console.log('Creating popup with text:', cafe.store_name || 'カフェ')
-
   // 少し遅延させてポップアップを地図に追加
   setTimeout(() => {
     if (map) {
       popup.setLngLat([cafe.lng, cafe.lat]).addTo(map)
       currentPopupRef.current = popup
-      console.log('Popup added to map (delayed)')
 
       // ポップアップ要素にクリックイベントを追加
       if (onPopupClick) {
@@ -47,22 +41,12 @@ export const showPopup = (
           content.style.cursor = 'pointer' // クリック可能であることを示すカーソル
           content.addEventListener('click', (e) => {
             e.stopPropagation() // 地図へのクリック伝播を防ぐ
-            console.log('Popup clicked!')
             onPopupClick()
           })
         }
       }
     }
   }, 10)
-
-  // デバッグ用：ポップアップ要素を確認
-  setTimeout(() => {
-    const popupElements = document.querySelectorAll('.maplibregl-popup')
-    console.log('Popup elements found:', popupElements.length)
-    popupElements.forEach((el, index) => {
-      console.log(`Popup ${index}:`, el, 'visible:', window.getComputedStyle(el).display !== 'none')
-    })
-  }, 100)
 }
 
 // ポップアップを非表示にする関数

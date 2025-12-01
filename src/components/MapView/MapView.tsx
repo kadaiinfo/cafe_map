@@ -213,7 +213,6 @@ export default function MapView() {
 
         // 地図の背景クリック時の処理
         map.on('click', () => {
-            console.log('Map background clicked')
             setSelected(null)
         })
 
@@ -249,7 +248,6 @@ export default function MapView() {
 
     // ポップアップ表示制御（カフェ選択状態変更時に毎回実行）
     useEffect(() => {
-        console.log('selected changed:', selected?.store_name || 'null')
         if (selected) {
             showPopup(selected, mapRef.current, currentPopupRef, handlePopupClick)
         } else {
