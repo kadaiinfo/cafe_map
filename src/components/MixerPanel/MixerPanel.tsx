@@ -42,7 +42,6 @@ export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onSh
 
     <div className="mixer-panel">
       <div className="mixer-panel__header">
-        <h2 className="mixer-panel__title">表示設定</h2>
         <button
           className="mixer-panel__close"
           onClick={onClose}
@@ -61,7 +60,7 @@ export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onSh
             onClick={onShowCafeList}
           >
             <div className="mixer-panel__option-content">
-              <div className="mixer-panel__option-title">リスト表示</div>
+              <div className="mixer-panel__option-title">一覧表示</div>
               <div className="mixer-panel__option-desc">ご飯屋さんを一覧で表示</div>
             </div>
           </button>
@@ -72,7 +71,7 @@ export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onSh
           >
             <div className="mixer-panel__option-content">
               <div className="mixer-panel__option-title">近くのお店を表示</div>
-              <div className="mixer-panel__option-desc">500m内のご飯屋さんを表示</div>
+              <div className="mixer-panel__option-desc">500m内のお店を表示</div>
             </div>
           </button>
         </div>
@@ -124,6 +123,21 @@ export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onSh
               </a>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* フッター */}
+      <div className="mixer-panel__footer">
+        <nav className="mixer-panel__footer-nav">
+          <a href="https://kadaiinfo.com/" className="mixer-panel__footer-link" target="_blank" rel="noopener noreferrer">HOME</a>
+          <a href="https://kadaiinfo.com/posts" className="mixer-panel__footer-link" target="_blank" rel="noopener noreferrer">記事一覧</a>
+          <a href="https://kadaiinfo.com/contact" className="mixer-panel__footer-link" target="_blank" rel="noopener noreferrer">お問い合わせ</a>
+          <a href="https://kadaiinfo.com/terms" className="mixer-panel__footer-link" target="_blank" rel="noopener noreferrer">利用規約</a>
+          <a href="https://kadaiinfo.com/privacy-policy" className="mixer-panel__footer-link" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a>
+        </nav>
+        <div className="mixer-panel__footer-bottom">
+          <img src="/logo_fill.svg" className="mixer-panel__footer-logo" />
+          <p className="mixer-panel__footer-text">© {new Date().getFullYear()} KADAI INFO</p>
         </div>
       </div>
     </div>

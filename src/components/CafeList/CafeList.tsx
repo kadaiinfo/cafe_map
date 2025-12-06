@@ -45,7 +45,6 @@ export default function CafeList({ onCafeSelect, onClose }: CafeListProps) {
   return (
     <div className="cafe-list">
       <div className="cafe-list__header">
-        <h2 className="cafe-list__title">一覧</h2>
         <button
           className="cafe-list__close"
           onClick={onClose}
@@ -77,16 +76,14 @@ export default function CafeList({ onCafeSelect, onClose }: CafeListProps) {
               className="cafe-list__item"
               onClick={() => handleCafeClick(cafe)}
             >
-              {cafe.media_url && (
-                <img
-                  src={cafe.media_url}
-                  alt={cafe.store_name || "cafe"}
-                  className="cafe-list__item-image"
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).style.display = "none"
-                  }}
-                />
-              )}
+              <img
+                src={cafe.media_url || "/icon.jpg"}
+                alt={cafe.store_name || "cafe"}
+                className="cafe-list__item-image"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = "/icon.jpg"
+                }}
+              />
             </div>
           ))}
         </div>

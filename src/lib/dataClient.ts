@@ -93,16 +93,18 @@ const fetchCafeDataFromAPI = async (): Promise<CafeDataFromAPI[]> => {
 
 // 軽量データを生成
 const generateCafeData = (apiData: CafeDataFromAPI[]): Cafe[] => {
-    return apiData.map(cafe => ({
-        id: cafe.id,
-        lat: cafe.lat,
-        lng: cafe.lng,
-        store_name: cafe.store_name ?? null,
-        address: cafe.address ?? null,
-        media_url: cafe.media_type === "VIDEO" ? cafe.thumbnail_url ?? null : cafe.media_url ?? null,
-        permalink: cafe.permalink ?? null,
-        timestamp: cafe.timestamp
-    }))
+    return apiData
+        .filter(cafe => cafe.media_type !== "VIDEO") // リール動画を除外
+        .map(cafe => ({
+            id: cafe.id,
+            lat: cafe.lat,
+            lng: cafe.lng,
+            store_name: cafe.store_name ?? null,
+            address: cafe.address ?? null,
+            media_url: cafe.media_url ?? null,
+            permalink: cafe.permalink ?? null,
+            timestamp: cafe.timestamp
+        }))
 }
 
 // 軽量データを取得
