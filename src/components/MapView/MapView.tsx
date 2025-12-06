@@ -123,6 +123,7 @@ export default function MapView() {
                 duration: 3000
             })
         }
+        setSelected(null) // Informationパネルを閉じる
     }
 
 
