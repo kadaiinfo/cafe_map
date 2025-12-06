@@ -89,7 +89,6 @@
 /* mixer-panel__body外のセクションにもパディングを適用 */
 .mixer-panel>.mixer-panel__section {
   padding: 20px;
-  border-bottom: 1px solid #e0e0e0;
   flex-shrink: 0;
 }
 
@@ -109,13 +108,13 @@
 /* エリア選択 */
 .mixer-panel__area-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 8px;
 }
 
 @media (max-width: 768px) {
   .mixer-panel__area-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -128,6 +127,7 @@
   transition: all 0.2s ease;
   font-family: "Noto Sans JP", sans-serif;
   font-size: 14px;
+  font-weight: 500;
   color: #000;
   text-align: center;
 }
@@ -137,50 +137,79 @@
   background-color: #f8f9fa;
 }
 
-.mixer-panel__area-button--selected {
-  background-color: #007bff;
-  border-color: #007bff;
-  color: white;
-}
-
-.mixer-panel__area-button--selected:hover {
-  background-color: #0056b3;
+.mixer-panel__area-button:active {
+  background-color: #e9ecef;
   border-color: #0056b3;
 }
 
-/* エリアマップ画像 */
-.mixer-panel__interactive-map {
-  position: relative;
-  width: 100%;
-  margin-top: 16px;
+/* 記事グリッド */
+.mixer-panel__articles-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 12px;
 }
 
-.mixer-panel__area-map {
-  width: 100%;
-  height: auto;
-  border-radius: 6px;
+@media (max-width: 768px) {
+  .mixer-panel__articles-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+/* OGPカードスタイル */
+.mixer-panel__article-card {
   display: block;
-}
-
-/* 地図上のクリック可能なエリア */
-.mixer-panel__map-hotspot {
-  position: absolute;
+  width: 100%;
   background: white;
-  border: 1.5px solid #ddd;
-  border-radius: 6px;
+  overflow: hidden;
   cursor: pointer;
   transition: all 0.2s ease;
-  padding: 0;
+  text-decoration: none;
+  box-sizing: border-box;
 }
 
-.mixer-panel__map-hotspot:hover {
-  background: #f8f9fa;
-  border-color: #007bff;
+.mixer-panel__article-card:hover {
+  opacity: 0.8;
 }
 
-.mixer-panel__map-hotspot:active {
-  background: #e9ecef;
-  border-color: #0056b3;
+.mixer-panel__article-image {
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  background: #f0f0f0;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.mixer-panel__article-image img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  max-width: 100%;
+}
+
+.mixer-panel__article-body {
+  padding: 12px 0 0 0;
+}
+
+.mixer-panel__article-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #000;
+  font-family: "Noto Sans JP", sans-serif;
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .mixer-panel__article-image {
+    height: 160px;
+  }
+
+  .mixer-panel__article-title {
+    font-size: 14px;
+  }
 }
 
 /* 表示オプション */

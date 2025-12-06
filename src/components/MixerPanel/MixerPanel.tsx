@@ -1,10 +1,18 @@
 import "./MixerPanel.css"
+import articlesData from "../../data/articles-ogp.json"
 
 interface MixerPanelProps {
   onClose: () => void
   onShowCafeList: () => void
   onAreaSelect: (lng: number, lat: number) => void
   onShowNearbyCafes: () => void
+}
+
+interface Article {
+  url: string
+  title: string
+  image: string
+  fallbackImage?: string
 }
 
 export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onShowNearbyCafes }: MixerPanelProps) {
@@ -15,15 +23,19 @@ export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onSh
     { id: "central", name: "天文館", lng: 130.5548586, lat: 31.5901844 },
     { id: "riverside", name: "名山", lng: 130.5582345, lat: 31.5953913 },
     { id: "downtown", name: "谷山", lng: 130.5229738, lat: 31.5298778 },
-    { id: "aira", name: "姶良", lng: 130.635556, lat: 31.728611 },
-    { id: "kirisima", name: "国分", lng: 130.7645666, lat: 31.7429681 },
-    { id: "ibusuki", name: "指宿", lng: 130.633333, lat: 31.251111 },
-    { id: "sendai", name: "川内", lng: 130.301944, lat: 31.814167 },
   ]
+
+  const articles: Article[] = articlesData
 
   const handleAreaClick = (area: typeof areas[0]) => {
     onAreaSelect(area.lng, area.lat)
     onClose() // エリア選択後にパネルを閉じる
+  }
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>, fallbackImage?: string) => {
+    if (fallbackImage && e.currentTarget.src !== fallbackImage) {
+      e.currentTarget.src = fallbackImage
+    }
   }
 
   return (
@@ -71,78 +83,46 @@ export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onSh
         <div className="mixer-panel__section">
           <h3 className="mixer-panel__section-title">エリアに移動</h3>
 
-          {/* インタラクティブマップ */}
-          <div className="mixer-panel__interactive-map">
-            <img
-              src="/information_map.png"
-              alt="エリアマップ"
-              className="mixer-panel__area-map"
-            />
+          {/* エリアボタングリッド */}
+          <div className="mixer-panel__area-list">
+            {areas.map((area) => (
+              <button
+                key={area.id}
+                className="mixer-panel__area-button"
+                onClick={() => handleAreaClick(area)}
+              >
+                {area.name}
+              </button>
+            ))}
+          </div>
+        </div>
 
-            {/* 地図上のクリック可能なエリア */}
-            <button
-              className="mixer-panel__map-hotspot"
-              style={{ top: '1%', left: '55%', width: '20%', height: '10%' }}
-              onClick={() => handleAreaClick(areas.find(a => a.id === 'aira')!)}
-              title="姶良"
-              aria-label="姶良エリアに移動"
-            />
-            <button
-              className="mixer-panel__map-hotspot"
-              style={{ top: '1%', left: '78%', width: '20%', height: '10%' }}
-              onClick={() => handleAreaClick(areas.find(a => a.id === 'kirisima')!)}
-              title="国分"
-              aria-label="国分エリアに移動"
-            />
-            <button
-              className="mixer-panel__map-hotspot"
-              style={{ top: '58%', left: '30%', width: '20%', height: '10%' }}
-              onClick={() => handleAreaClick(areas.find(a => a.id === 'uptown')!)}
-              title="騎射場"
-              aria-label="騎射場エリアに移動"
-            />
-            <button
-              className="mixer-panel__map-hotspot"
-              style={{ top: '30%', left: '20%', width: '20%', height: '10%' }}
-              onClick={() => handleAreaClick(areas.find(a => a.id === 'all')!)}
-              title="中央駅"
-              aria-label="中央駅エリアに移動"
-            />
-            <button
-              className="mixer-panel__map-hotspot"
-              style={{ top: '20%', left: '45%', width: '20%', height: '10%' }}
-              onClick={() => handleAreaClick(areas.find(a => a.id === 'central')!)}
-              title="天文館"
-              aria-label="天文館エリアに移動"
-            />
-            <button
-              className="mixer-panel__map-hotspot"
-              style={{ top: '13%', left: '58%', width: '20%', height: '10%' }}
-              onClick={() => handleAreaClick(areas.find(a => a.id === 'riverside')!)}
-              title="名山"
-              aria-label="名山エリアに移動"
-            />
-            <button
-              className="mixer-panel__map-hotspot"
-              style={{ top: '89%', left: '25%', width: '20%', height: '10%' }}
-              onClick={() => handleAreaClick(areas.find(a => a.id === 'downtown')!)}
-              title="谷山"
-              aria-label="谷山エリアに移動"
-            />
-            <button
-              className="mixer-panel__map-hotspot"
-              style={{ top: '89%', left: '50%', width: '20%', height: '10%' }}
-              onClick={() => handleAreaClick(areas.find(a => a.id === 'ibusuki')!)}
-              title="指宿"
-              aria-label="指宿エリアに移動"
-            />
-            <button
-              className="mixer-panel__map-hotspot"
-              style={{ top: '1%', left: '1%', width: '20%', height: '10%' }}
-              onClick={() => handleAreaClick(areas.find(a => a.id === 'sendai')!)}
-              title="川内"
-              aria-label="川内エリアに移動"
-            />
+        {/* おすすめ記事セクション */}
+        <div className="mixer-panel__section">
+          <h3 className="mixer-panel__section-title">おすすめ記事</h3>
+          <div className="mixer-panel__articles-grid">
+            {articles.map((article, index) => (
+              <a
+                key={index}
+                href={article.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mixer-panel__article-card"
+              >
+                <div className="mixer-panel__article-image">
+                  <img
+                    src={article.image}
+                    alt={article.title}
+                    onError={(e) => handleImageError(e, article.fallbackImage)}
+                  />
+                </div>
+                <div className="mixer-panel__article-body">
+                  <div className="mixer-panel__article-title">
+                    {article.title}
+                  </div>
+                </div>
+              </a>
+            ))}
           </div>
         </div>
       </div>
