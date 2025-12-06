@@ -87,14 +87,6 @@ export default function CafeList({ onCafeSelect, onClose }: CafeListProps) {
                   }}
                 />
               )}
-              <div className="cafe-list__item-content">
-                <h3 className="cafe-list__item-title">
-                  {cafe.store_name || "—"}
-                </h3>
-                <p className="cafe-list__item-address">
-                  {cafe.address || "—"}
-                </p>
-              </div>
             </div>
           ))}
         </div>

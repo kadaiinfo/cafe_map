@@ -2,7 +2,7 @@
   position: absolute;
   top: 80px;
   left: 20px;
-  width: 350px;
+  width: 450px;
   max-height: calc(100vh - 100px);
   background: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
