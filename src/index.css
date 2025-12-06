@@ -83,15 +83,3 @@ html, body {
 * {
   overscroll-behavior: none;
 }
-
-/* PWA: ステータスバー領域まで地図を表示 */
-@supports (padding-top: env(safe-area-inset-top)) {
-  body {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-
-  #root {
-    min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-  }
-}

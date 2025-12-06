@@ -13,7 +13,7 @@ export default defineConfig({
         name: 'Cafe Map - 鹿児島ご飯屋さんマップ',
         short_name: 'Cafe Map',
         description: '鹿児島のご飯屋さんを地図で探せるアプリ',
-        theme_color: 'transparent',
+        theme_color: '#000000',
         background_color: '#f0ede4',
         display: 'standalone',
         start_url: '/',
