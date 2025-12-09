@@ -119,6 +119,7 @@ export default function Search({
     <div className="search-container" ref={searchRef}>
       <div className="search-logo-container">
         <img src="/logo.svg" alt="Logo" className="search-logo" />
+        <img src="/logo_color.svg" alt="Logo Color" className="search-logo-color" />
       </div>
       <form onSubmit={handleSubmit} className="search-form">
         <div className="search-input-container">

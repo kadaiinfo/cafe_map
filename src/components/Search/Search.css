@@ -19,6 +19,12 @@
   }
 }
 
+.search-logo-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
 .search-logo {
   height: 30px;
   width: auto;
@@ -26,10 +32,20 @@
   margin-left: 4px;
 }
 
+.search-logo-color {
+  height: 15px;
+  width: auto;
+  object-fit: contain;
+}
+
 /* PC版のみロゴを大きく */
 @media (min-width: 769px) {
   .search-logo {
     height: 40px;
+  }
+
+  .search-logo-color {
+    height: 20px;
   }
 }
 
