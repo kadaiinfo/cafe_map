@@ -26,6 +26,13 @@
   margin-left: 4px;
 }
 
+/* PC版のみロゴを大きく */
+@media (min-width: 769px) {
+  .search-logo {
+    height: 40px;
+  }
+}
+
 .search-form {
   display: flex;
   gap: 8px;
