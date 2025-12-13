@@ -137,7 +137,7 @@ export default function MixerPanel({ onClose, onShowCafeList, onAreaSelect, onSh
         </nav>
         <div className="mixer-panel__footer-bottom">
           <img src="/logo_fill.svg" className="mixer-panel__footer-logo" />
-          <p className="mixer-panel__footer-text">© {new Date().getFullYear()} KADAI INFO</p>
+          <p className="mixer-panel__footer-text">© {new Date().getFullYear()} グルメインフォ</p>
         </div>
       </div>
     </div>
