@@ -330,7 +330,7 @@ export default function Information({ cafe, onClose, expandTrigger = 0 }: Inform
                                     rel="noopener noreferrer"
                                     href="https://kadaiinfo.com/contact"
                                 >
-                                    情報修正の依頼はこちら
+                                    情報修正のご依頼はこちら
                                 </a>
                             </p>
                         </div>
