@@ -1,0 +1,21 @@
+{
+  "name": "グルメインフォ",
+  "short_name": "グルメインフォ",
+  "description": "鹿大生が鹿児島の美味しいグルメを紹介",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
