@@ -74,6 +74,18 @@ export const updateMarkersWithZoom = (
         
         // GA4イベント送信（Zaraz経由）
         if ((window as any).zaraz) {
+          // ページパスをカフェIDに設定
+          const cafePage: string = `/${cafe.id}`
+          const pageTitle: string = (cafe.store_name && typeof cafe.store_name === 'string') ? cafe.store_name : 'カフェ詳細'
+          
+          // ページビューイベント送信（カフェページとして追跡）
+          (window as any).zaraz.track('page_view', {
+            page_location: window.location.origin + cafePage,
+            page_path: cafePage,
+            page_title: pageTitle
+          })
+          
+          // マーカークリックイベントも送信
           (window as any).zaraz.track('cafe_marker_clicked', {
             cafe_id: cafe.id,
             cafe_name: cafe.store_name || 'Unknown',
@@ -82,6 +94,13 @@ export const updateMarkersWithZoom = (
             lng: cafe.lng,
             lat: cafe.lat
           })
+          
+          // ブラウザのURLとタイトルを更新
+          window.history.pushState(
+            { cafeId: cafe.id }, 
+            pageTitle,
+            cafePage
+          )
         }
 
         handleCafeSelection(cafe, map, setSelected, true) // maintainZoom: true
