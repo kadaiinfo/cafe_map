@@ -76,6 +76,9 @@ export const updateMarkersWithZoom = (
         const cafePage: string = `/${cafe.id}`
         const pageTitle: string = cafe.store_name ? cafe.store_name.toString() : 'カフェ詳細'
         
+        // まず詳細を表示（WebViewでも確実に動作するように先に実行）
+        handleCafeSelection(cafe, map, setSelected, true) // maintainZoom: true
+
         // GA4イベント送信（Zaraz経由）
         if ((window as any).zaraz) {
           // ページビューイベント送信（カフェページとして追跡）
@@ -95,15 +98,17 @@ export const updateMarkersWithZoom = (
             lat: cafe.lat
           })
           
-          // ブラウザのURLとタイトルを更新
-          window.history.pushState(
-            { cafeId: cafe.id }, 
-            pageTitle,
-            cafePage
-          )
+          // ブラウザのURLとタイトルを更新（WebViewで失敗してもエラーにしない）
+          try {
+            window.history.pushState(
+              { cafeId: cafe.id }, 
+              pageTitle,
+              cafePage
+            )
+          } catch (error) {
+            console.log('History API not available in this context')
+          }
         }
-
-        handleCafeSelection(cafe, map, setSelected, true) // maintainZoom: true
       })
     }
   })
