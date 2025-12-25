@@ -71,9 +71,20 @@ export const updateMarkersWithZoom = (
       // マーカークリック時の処理
       markerEl.addEventListener('click', (e) => {
         e.stopPropagation() // 地図へのクリック伝播を防ぐ
-        handleCafeSelection(cafe, map, setSelected, true) // maintainZoom: true
+        
+        // GA4イベント送信（Zaraz経由）
+        if ((window as any).zaraz) {
+          (window as any).zaraz.track('cafe_marker_clicked', {
+            cafe_id: cafe.id,
+            cafe_name: cafe.store_name || 'Unknown',
+            cafe_address: cafe.address || 'Unknown',
+            zoom_level: map.getZoom(),
+            lng: cafe.lng,
+            lat: cafe.lat
+          })
+        }
 
-        // マーカークリック時の処理完了
+        handleCafeSelection(cafe, map, setSelected, true) // maintainZoom: true
       })
     }
   })
